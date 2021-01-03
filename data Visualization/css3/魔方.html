@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        :root{
+            height: 100%;
+        }
+        body {
+            perspective: 800px;
+            transform-style: preserve-3d;
+            height: 100%;
+            background-color: #000;
+        }
+
+        .container {
+            position: absolute;
+            left: 600px;
+            top: 200px;
+            height: 500px;
+            width: 500px;
+            transform-style: preserve-3d;
+            /* box-shadow: 0px 0px 100px 0px #fff inset; */
+            /* border-radius: 50% ; */
+            animation: rotatex-move 10s cubic-bezier(0, 0, 1, 1) infinite;
+        }
+
+        .box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-left: -100px;
+            margin-top: -100px;
+            width: 200px;
+            height: 200px;
+            text-align: center;
+            line-height: 200px;
+            perspective: 800px;
+            font-size: 50px;
+
+        }
+
+        .box1 {
+            background-color: rgba(255, 255, 120, 1);
+            transform: rotateY(0deg) translateZ(100px);
+        }
+
+        .box2 {
+            background-color: rgba(255, 125, 255, 1);
+            transform: rotateY(90deg) translateZ(100px);
+        }
+
+        .box3 {
+            background-color: rgba(121, 125, 255, 1);
+            transform: rotateY(180deg) translateZ(100px);
+        }
+
+        .box4 {
+            background-color: rgba(0, 125, 255, 1);
+            transform: rotateY(270deg) translateZ(100px);
+        }
+
+        .box5 {
+            background-color: rgba(255, 12, 0, 1);
+            transform: rotateX(90deg) translateZ(100px);
+        }
+
+        .box6 {
+            background-color: rgba(25, 5, 255, 1);
+            transform: rotatex(-90deg) translateZ(100px);
+        }
+
+        @keyframes rotatex-move {
+            0% {
+                transform: rotateY(0) rotateX(0)
+            }
+
+            100% {
+                transform: rotateX(360deg)
+            } 
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="box box1">1</div>
+        <div class="box box2">2</div>
+        <div class="box box3">3</div>
+        <div class="box box4">4</div>
+        <div class="box box5">5</div>
+        <div class="box box6">6</div>
+    </div>
+    <script>
+        const dom = document.getElementsByTagName('body')[0];
+        dom.addEventListener('mousemove',function (e){
+            dom.style.perspectiveOrigin = e.pageX + 'px '+e.pageY + 'px';
+
+        })
+    </script>
+</body>
+
+</html>

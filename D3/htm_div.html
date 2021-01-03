@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        .bar {
+            width: 25px;
+            height: 100px;
+            display: inline-block;
+            background-color: blue;
+            margin-left: 10px;
+            transition: all .3s linear;
+        }
+        .bar:hover{
+            background-color: blueviolet;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bar"></div>
+    <script src="./js/d3.js"></script>
+    <script>
+       const dataset = [12, 31, 22, 17, 25, 18, 29, 14, 9];
+        d3.select("body").selectAll(".bar")
+        .data(dataset)
+        .enter()
+        .append("div")
+        .attr("class", "bar")
+        .style("height", (d) => (d + "px"))
+    </script>
+</body>
+
+</html>

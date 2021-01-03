@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        html,body{
+            margin:0;
+            padding:0;
+        }
+    </style>
+</head>
+<body>
+    <script src="../three.js"></script>
+    <script>
+        // 创建渲染器
+        const rederer = new THREE.WebGLRenderer();
+        rederer.setSize(window.innerWidth,window.innerHeight);
+        document.body.appendChild(rederer.domElement);
+        // 创建相机
+        const camera = new THREE.PerspectiveCamera(45,window.innerWidth / window.innerHeight,1,500);
+        camera.position.set(0,0,100);
+        camera.lookAt(0,0,0);
+        // 创建场景
+        const scene = new THREE.Scene();
+
+        //  开始画线
+        const material = new THREE.LineBasicMaterial({color:'red'});
+        const points = [];
+        points.push(new THREE.Vector3(-10,0,0));
+        points.push(new THREE.Vector3(0,0,-10));
+        // points.push(new THREE.Vector3(10,0,20));
+        // points.push(new THREE.Vector3(0,0,0))
+        const geometry = new THREE.BufferGeometry().setFromPoints(points);
+        const line = new THREE.Line(geometry,material)
+
+        //  加入场景
+        scene.add(line);
+        rederer.render(scene,camera)
+    </script>
+</body>
+</html>

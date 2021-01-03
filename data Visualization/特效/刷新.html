@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="main">
+        <div class="float-layer">
+            <div class="item-container">
+                <div class="item-left">
+                    <div class="item-mask">
+                        <div class="mask"></div>
+                        <div class="item-content"></div>
+                    </div>
+                    <div class="item-mask">
+                        <div class="mask"></div>
+                        <div class="item-content"></div>
+                    </div>
+                </div>
+                <div class="item-main">
+                </div>
+                <div class="item-right">
+                    <div id="mask"></div>
+
+                </div>
+            </div>
+            <div class="footer-container">
+                <div class="footer-left"></div>
+                <div class="footer-right"></div>
+            </div>
+
+        </div>
+        <div class="map" style="width: 100%; height: 100%;"></div>
+
+
+    </div>
+</body>
+
+<script>
+    //动画制作 =》 队列 =》 执行
+const animaitionQueue = [];
+
+/**
+ * 
+ * @param {*} dom  数组类型，与animationName相对应 
+ * @param {*} animationName 数组类型 动画名称，与前面dom对象相对应
+ */
+function joinAnimation(dom, animationName) {
+    for (let i = 0; i < dom[0].length; i++) {
+        animaitionQueue[i] = function (i) {
+            console.log('push 数据')
+            dom[0][i].addClass = 'test'
+            dom[0][i].style.animation = 'none';
+            dom[1][i].style.animation = 'none'
+            setTimeout(() => {
+                dom[0][i].style.animation = `${animationName[0]} .7s linear  ${0.3 * i}s`;
+                dom[1][i].style.animation = `${animationName[1]} 0.3s linear forwards ${((i + 1) * .4)}s`
+            })
+        }
+    }
+
+
+}
+
+/**
+ * 运行队列中的动画，并清除队列中的动画
+ */
+function runAnimation() { 
+    animaitionQueue.forEach((ele,index)=>{
+        ele(index)
+    })
+    // animaitionQueue.length = 0;
+}
+
+
+const masks = document.getElementsByClassName('mask')
+const contents = document.getElementsByClassName('item-content')
+
+joinAnimation([masks,contents],['move','show'])
+runAnimation()
+setTimeout(() => {
+    console.timeLog('运行定时器')
+    joinAnimation([masks,contents],['move','show']);
+    runAnimation()
+    console.timeLog('结束定时器')
+
+}, 5000)
+
+
+
+// export default {
+//     joinAnimation,
+//     runAnimation,
+// }
+
+
+</script>
+
+</html>

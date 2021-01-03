@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            perspective: 800px;
+            transform-style: preserve-3d;
+        }
+        .box{
+            width:200px;
+            height:200px;
+            background-image: url('../timg.jpg');
+            background-position: 0 0;
+            background-size: 100% 100%;
+            position:absolute;
+            left:200px;
+            top:200px;
+            transform: rotateX(0deg);
+            transform-origin: 0 0;
+
+        }
+    </style>
+</head>
+<body>
+    <div class="box"></div>
+</body>
+</html>

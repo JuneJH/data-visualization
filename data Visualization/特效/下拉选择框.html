@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .my-select-container{
+            width: 400px;   
+            cursor: pointer;
+        }
+        .my-select-show{
+            width: 100%;
+            height: 50px;
+            border:1px solid red;
+            line-height: 50px;
+            padding-left: 10px;
+            box-sizing: border-box;
+        }
+        .my-select-show::after{
+            content:'';
+            width: 10px;
+            height: 10px;
+            border-left:1px solid #999;
+            border-bottom: 1px solid #999;
+            transform: rotateZ(-45deg);
+            float: right;
+            margin:15px 15px 0;
+        }
+        .my-select-show.select::after{
+            transform: rotateZ(135deg);
+            margin-top: 20px;
+        }
+        .my-select-option{
+            width: 100%;
+            height:0px;
+            visibility: hidden;
+            border:1px solid red;
+            margin-top:5px;
+            overflow-y: auto;
+            transition: all .5s linear;
+        }
+        .my-select-option-ul{
+            list-style-type: none;
+            margin:0;
+            padding: 0;
+        }
+        .my-select-option-ul li{
+            width: 100%;
+            height: 40px;
+            line-height: 40px;
+            margin-bottom: 10px;
+            text-align: center;
+            transition:all .5s ;
+            position: relative;
+            overflow: hidden;
+        }
+        .my-select-option-ul li::after{
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top:0;
+            background: linear-gradient(to left,#666,#999);
+            opacity: 0;
+            transition: transform .3s, opacity .6s;
+
+        }
+        .my-select-option-ul li:active::after{
+            transform: scale(0);
+            opacity: .3;
+            transition:0s;
+        }
+        .my-select-option-ul li:hover{
+            background-color: rgb(216, 216, 216);
+        }
+        .show{
+            height: 300px;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body>
+    <div class="my-select-container">
+        <div class="my-select-show"></div>
+        <div class="my-select-option">
+            <ul class="my-select-option-ul">
+                <li>1</li>
+                <li>2</li>
+                <li>3</li>
+                <li>4</li>
+                <li>5</li>
+                <li>6</li>
+                <li>7</li>
+                <li>8</li>
+                <li>9</li>
+                <li>10</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const selectShow = document.getElementsByClassName('my-select-show')[0]
+        const selectOption = document.getElementsByClassName('my-select-option')[0]
+        const selectUl = document.getElementsByClassName('my-select-option-ul')[0]
+        selectShow.addEventListener('click',()=>{
+            selectOption.classList.add('show')
+            selectShow.classList.add('select')
+        })
+        selectUl.addEventListener('click',(e)=>{
+            if(e.target.localName == 'li'){
+                selectShow.innerText = e.target.innerText;
+                selectOption.classList.remove('show')
+                selectShow.classList.remove('select')
+            }
+
+        })
+        selectUl.addEventListener('mouseleave',()=>{
+            selectOption.classList.remove('show')
+            selectShow.classList.remove('select')
+
+
+        })
+    </script>
+
+</body>
+</html>
