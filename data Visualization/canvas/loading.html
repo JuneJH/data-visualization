@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas {
+            border: 1px solid;
+            margin: 200px;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas" width="600px" height="600px"></canvas>
+    <script>
+        const ctx = document.getElementById('canvas').getContext('2d');
+        ctx.beginPath()
+        // ctx.lineWidth = 20;
+        // ctx.arc(300, 300, 200, 0, Math.PI, false)
+        // ctx.stroke();
+        // setTimeout(() => {
+        //     ctx.arc(300, 300, 200, 0, Math.PI * 1.5, false)
+        //     ctx.stroke();
+        // }, 2000)
+        let i = 0;
+        function move() {
+            ctx.clearRect(0, 0, 600, 600);
+            i++;
+            const angle = Math.PI / 180 * i;
+            if (angle == Math.PI * 2) {
+                console.log(angle)
+                i = 0;
+            }
+            console.log(angle)
+            ctx.arc(300, 300, 200, 0, angle, false)
+            ctx.stroke();
+
+            window.requestAnimationFrame(move)
+        }
+        // move();
+        setInterval(()=>{
+            ctx.clearRect(0, 0, 600, 600);
+            i++;
+            const angle = Math.PI / 180 * i;
+            if (angle == Math.PI * 2) {
+                console.log(angle)
+                i = 0;
+            }
+            console.log(angle)
+            ctx.arc(300, 300, 200, 0, angle, false)
+            ctx.stroke();
+        },1000/60)
+
+    </script>
+</body>
+
+</html>

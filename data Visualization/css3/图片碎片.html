@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+    <head>
+            <title>01 PAGE</title>
+            <meta name="viewport" content="width=device-width,initial-scale=1">   
+            <style type="text/css">
+                #main{
+                    width: 200px;
+                    height: 200px;
+                    position:absolute;
+                    left: 50%;
+                    top:50%;
+                    margin: -300px 0 0 -100px;
+                    /* background-color: orchid; */
+                    /* background-color: white; */
+                }
+ 
+                #main>div{
+ 
+                    width: 10px;
+                    height: 10px;
+                    background-color: pink;
+                    position:absolute;
+                    /* transition: 0.3s ; */
+                }
+                
+            </style> 
+    </head>
+    <body>
+        <div id="main"></div>
+        <script type="text/javascript">
+            let child;
+ 
+            for(let i = 0;i<20;i++){
+                for(let j = 0;j<20;j++){
+                    child = document.createElement("div");
+                    child.style.top = (i * 10) + 'px';
+                    child.style.left = (j * 10) + 'px';
+                    child.style.transition = (Math.random() * 0.2 + 0.1) + 's all ease';
+                    main.appendChild(child);
+                }
+            }
+ 
+            let index=399;
+            let timer;
+            // children;
+            main.onclick = function(){
+ 
+                // clearInterval(timer);
+                let children = document.querySelectorAll('#main>div');
+                if(index==399){
+                    clearInterval(timer);
+                    timer = setInterval(() => {
+ 
+                        // if(index == -1){  
+                        //     clearInterval(timer);
+                        //     // index = 0;
+                        //     return;
+                        // }
+                        
+                        children[index].style.top = (children[index].offsetTop + 200) + 'px';
+                        index--;
+                        if(index == -1){  
+                            clearInterval(timer);
+                            // index = 0;
+                            return;
+                        }
+                    }, 10);
+                    // index = 0;
+ 
+                }else if(index==-1){
+                    clearInterval(timer);
+                    // index = 0;
+                    timer = setInterval(() => {
+                        
+                        children[index+1].style.top = (children[index+1].offsetTop - 200) + 'px';
+                        index++;
+                        if(index == 399){
+                            clearInterval(timer);
+                            return;
+                        }
+                    }, 10);
+                }
+ 
+                // let children = document.querySelectorAll('#main>div');
+                // // for()
+                // // setTimeout(() => {
+                // // for(let index=99;index >=0; index--){
+                //     // setTimeout(() => {
+                //     setInterval(() => {
+                        
+                //         children[index].style.top = (children[index].offsetTop + 200) + 'px';
+                //         index--;
+                //     }, 10);
+                // // }
+                // // }, 300);
+            }
+        </script>
+    </body>
+</html>

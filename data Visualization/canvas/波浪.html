@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #canvas {
+            border: 1px solid;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas" width="800" height="600"></canvas>
+    <script>
+        function draw() {
+            const canvas = document.getElementById('canvas')
+            if (canvas.getContext) {
+                const ctx = canvas.getContext('2d');
+                let x = 0;
+                let wx = 800;
+                let hy = 600;
+                ctx.translate(0,200)
+                setInterval(() => {
+                    ctx.clearRect(0, 0, 800, 600);
+                    ctx.beginPath();
+                    ctx.moveTo(0+x, 300*Math.sin(600))
+                    ctx.quadraticCurveTo(200+x,0*Math.sin(600),400+x,300*Math.sin(600))
+                    ctx.quadraticCurveTo(600+x,600*Math.sin(600),800+x,300*Math.sin(600))
+                    ctx.moveTo(-800+x, 300*Math.sin(600))
+                    ctx.quadraticCurveTo(200-800+x,0*Math.sin(600),400-800+x,300*Math.sin(600))
+                    ctx.quadraticCurveTo(600-800+x,600*Math.sin(600),800-800+x,300*Math.sin(600))
+                    ctx.stroke();
+                    x += 1;
+                    if(x == 800){
+                        x = 0;
+                    }
+                }, 1000 / 120)
+            }
+        }
+        draw()
+        console.log()
+
+
+
+
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    .container{
+        width: 500px;
+        perspective-origin: 30% 50%;
+        margin:200px auto;
+        transform-style: preserve-3d;
+
+    }
+    .box {
+        width: 600px;
+        height: 600px;
+        background-color: red;
+        background-image: url("./timg.jpg");
+        background-position: 0 0;
+        background-size: 100% 100%;
+        filter:blur(1px) drop-shadow(0px 0px 10px #000);
+        border-radius: 50%;
+
+      animation: playing 10s linear forwards;
+    }
+    @keyframes playing {
+        0%{
+            transform: rotateZ(0deg);
+        }
+        100%{
+            transform: rotateZ(360deg);
+        }
+        
+    }
+</style>
+
+<body>
+    <div class="container">
+        <div class="box"></div>
+    </div>
+</body>
+
+</html>

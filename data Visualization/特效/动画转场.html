@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>clip-path</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #008c8c;
+            perspective: 800px;
+            perspective-origin: center;
+        }
+
+        .path {
+            width: 200px;
+            height: 200px;
+            background-color: red;
+            margin: 200px auto;
+            clip-path: polygon(25px 75px, 75px 50px,100px 0,125px 25px,175px 75px);
+            animation: transform-polygon 6s cubic-bezier(0.075, 0.82, 0.165, 1) infinite,move 3s linear infinite;
+        }
+        
+        @keyframes move {
+            0%{
+                transform: rotateX(0deg) ;
+            }
+            50%{
+                transform: rotateX(180deg);
+            }
+            100%{
+                transform: rotateX(360deg);
+            }
+            
+        }
+
+        @keyframes transform-polygon {
+            0% {
+                clip-path: polygon(25px 75px, 75px 50px,100px 0,125px 25px,175px 75px);
+                background-color: orange;
+
+            }
+            50%{
+                clip-path: polygon(0px 0px, 0px 0px,100px 0,125px 25px,200px 200spx);
+                background-color: red;
+            }
+
+            100% {
+                clip-path: polygon(25px 75px, 75px 50px,100px 0,125px 25px,175px 75px);
+                background-color: yellow;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="path"></div>
+</body>
+
+</html>

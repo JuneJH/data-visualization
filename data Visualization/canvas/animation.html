@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+</style>
+
+<body>
+    <canvas width="1500" height="900" id="canvas"></canvas>
+</body>
+<script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let moveTimer;
+
+    const ball = {
+        x: 2,
+        y: 2,
+        r: 2,
+        vx: 5,
+        vy: 10,
+        color: 'orange',
+        draw: function () {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2, true)
+            ctx.closePath();
+            ctx.fillStyle = this.color;
+            ctx.fill();
+        }
+    }
+    ball.draw();
+    ball.draw();
+    ball.draw();
+    ball.draw();
+    function move() {
+        // ctx.clearRect(0, 0, 1500, 900)F
+        ctx.fillStyle = 'rgba(255,255,255,.1)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ball.draw();
+        if (ball.y + ball.vy > canvas.height - 50 || ball.y + ball.vy < 0) {
+            ball.vy = -ball.vy;
+        }
+        if (ball.x + ball.vx > canvas.width - 50 || ball.x + ball.vx < 0) {
+            ball.vx = -ball.vx;
+        }
+        ball.x += ball.vx;
+        ball.y += ball.vy;
+        ball.vy *= .05;
+        ball.vy += .25;
+        moveTimer = window.requestAnimationFrame(move);
+    }
+    canvas.addEventListener('click',function(){
+        move();
+    })
+    canvas.addEventListener('mouseleave',function(){
+        window.cancelAnimationFrame(moveTimer)
+    })
+    canvas.addEventListener('mousemove',function(e){
+        ball.x = e.clientX;
+        ball.y = e.clientY;
+        ctx.fillStyle = 'rgba(255,255,255,.3)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ball.draw();
+    })
+    
+
+</script>
+
+</html>

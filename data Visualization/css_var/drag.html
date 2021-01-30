@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css_var/drag.css">
+</head>
+
+<body>
+
+    <div class="box"></div>
+
+    <script>
+        const dom = document.getElementsByClassName('box')[0];
+        dom.onmousedown = (e) => {
+            const disX =  e.clientX - dom.offsetLeft
+            const disY = e.clientY - dom.offsetTop
+            document.onmousemove = (envent) => {
+                dom.style.setProperty('--box-left', envent.clientX - disX + 'px');
+                dom.style.setProperty('--box-top', envent.clientY - disY + 'px');
+                dom.style.setProperty('--box-color', `rgba(${Math.random()*255},${Math.random()*255},${Math.random()*255},${Math.random()})`)
+            }
+            document.onmouseup = () => {
+            document.onmousemove = null;
+        }
+        }
+
+    </script>
+
+</body>
+
+</html>

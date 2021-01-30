@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            width: 300px;
+        }
+
+        .block {
+            width: 100px;
+            height: 100px;
+            margin: 20px;
+            flex-shrink: 0;
+            transform-origin: 50% 50%;
+        }
+
+        .block:nth-child(1) {
+            background: red;
+        }
+
+        .block:nth-child(2) {
+            background: blue;
+        }
+
+        .block:nth-child(3) {
+            background: green;
+        }
+
+        .block:nth-child(4) {
+            background: orange;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="block"></div>
+        <div class="block"></div>
+        <div class="block"></div>
+        <div class="block"></div>
+    </div>
+
+    <script>
+        class Timing {
+            constructor({ duration, iterations = 1 } = {}) {
+                this.startTime = Date.now();
+                this.duration = duration;
+                this.iterations = iterations;
+            }
+
+            get time() {
+                return Date.now() - this.startTime;
+            }
+
+            get p() {
+                const progress = Math.min(this.time / this.duration, this.iterations);
+                return this.isFinished ? 1 : progress % 1;
+            }
+
+            get isFinished() {
+                return this.time / this.duration >= this.iterations;
+            }
+        }
+
+        class Animator {
+            constructor({ duration, iterations }) {
+                this.timing = { duration, iterations };
+            }
+            animate(target, update) {
+                let frameIndex = 0;
+                const timing = new Timing(this.timing);
+                return new Promise((resolve) => {
+                    function next() {
+                        update({ target, frameIndex, timing });
+                        if (!timing.isFinished) {
+                            requestAnimationFrame(next);
+                        } else {
+                            requestAnimationFrame(next);
+                            resolve(timing);
+                        }
+                        frameIndex++;
+                    }
+                    next();
+                });
+            }
+        }
+
+
+
+
+        const blocks = document.querySelectorAll('.block');
+        const animator = new Animator({ duration: 1000, iterations: 1.5 });
+        (async function () {
+            let i = 0;
+            while (i != 6) { // eslint-disable-next-line no-await-in-loop
+                const flag = await animator.animate(blocks[i++ % 4], ({ target, timing }) => {
+                    target.style.transform = `rotate(${timing.p * 360}deg)`;
+                });
+            }
+        }());
+
+
+    </script>
+</body>
+
+</html>

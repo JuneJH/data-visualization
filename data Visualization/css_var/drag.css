@@ -1,0 +1,15 @@
+/* :root{
+    --box-left:0px;
+    --box-top:0px;
+    --box-color:red;
+} */
+.box{
+    position: absolute;
+    left:var(--box-left);
+    top:var(--box-top);
+    background-color:var(--box-color);
+    width: 200px;
+    height: 200px;
+    animation: all .6s;
+
+}

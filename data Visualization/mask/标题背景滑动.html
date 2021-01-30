@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    .container {
+        height: 400px;
+        background:url(../timg.jpg) no-repeat;
+        filter: blur(10px);
+        /* -webkit-mask-position: 0px 0px; */
+    }
+
+    .content {
+        width: 600px;
+        height: 400px;
+        background: url(../timg.jpg) no-repeat;
+        animation: move 6s linear forwards infinite;
+        -webkit-mask: url(../4.png) no-repeat;
+        -webkit-mask-size: 600px;
+        -webkit-mask-position: 0px 0px;
+        position:absolute;
+        left:20px;
+        top:100px;
+
+    }
+
+    @keyframes move {
+        0% {
+            background-position: 0 0;
+        }
+        50%{
+            background-position: 50% 50%;
+        }
+
+        100% {
+            background-position: 0 0;
+        }
+    }
+</style>
+
+<body>
+
+    <div class="container">
+    
+    </div>
+    <div class="content">
+    </div>
+
+    <script>
+        // const dom = document.getElementsByClassName('container')[0]
+        // dom.addEventListener('mousemove',(e)=>{
+        //     dom.style['-webkit-mask-position'] = e.clientX + 'px '+ e.clientY + 'px';
+        //     console.log(dom.style.WebkitMaskPosition)
+        // })
+    </script>
+</body>
+
+</html>

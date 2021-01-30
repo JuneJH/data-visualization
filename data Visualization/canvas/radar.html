@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    html,
+    body {
+        background: rgba(90,90,90,1);
+    }
+
+    @keyframes scan {
+        0% {
+            transform: rotate(0deg);
+
+        }
+
+        100% {
+            transform: rotate(360deg);
+
+        }
+
+    }
+
+    #canvas {
+        position: absolute;
+        top: 20px;
+        left: 500px;
+        animation: scan 7s linear infinite reverse;
+
+    }
+
+    #scan {
+        position: absolute;
+        top: 20px;
+        left: 500px;
+        /* animation: scan 6s linear infinite; */
+        transition: all .6s;
+        /* border: 1px solid red; */
+    }
+    .scan{
+        position: absolute;
+        top: 20px;
+        left: 500px;
+        animation: scan 6s linear infinite;
+        transition: all .6s;
+        /* border: 1px solid red; */
+        width: 800px;
+        height: 800px;
+        border-radius: 50%;
+        /* border:1px solid; */
+    }
+    .pointer{
+        position: absolute;
+        width: 300px;
+        height: 2px;
+        left:50%;
+        top:50%;
+        background-color: #2ecc71;
+        box-shadow: 0px 0px 6px 3px #2ecc71;
+
+    }
+</style>
+
+<body>
+    <canvas id="canvas" width="800" height="800"></canvas>
+    <canvas id="scan" width="800" height="800"></canvas>
+    <div class="scan">
+        <div class="pointer"></div>
+    </div>
+
+    <script>
+
+        const canvas = document.getElementById('canvas')
+        const canvasScan = document.getElementById('scan')
+        const scan = canvasScan.getContext('2d')
+        const ctx = canvas.getContext('2d')
+        ctx.beginPath();
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = 'rgba(52,152,219,.7)'
+        ctx.fillStyle = "#596275"
+        ctx.arc(400, 400, 300, 0, Math.PI * 2, true)
+        ctx.stroke();
+
+
+        for (let i = 0; i < 10; i++) {
+            ctx.beginPath();
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = 'rgba(52,152,219,.3)'
+
+            ctx.arc(400, 400, 300 - i * 30, 0, Math.PI * 2, true)
+            ctx.stroke();
+        }
+        for (let i = 0; i < 12; i++) {
+            ctx.beginPath();
+            ctx.moveTo(400, 400);
+            ctx.setLineDash([5, 7])
+            let a = Math.floor(Math.sin((Math.PI / 6 * i)) * 300);
+            let b = Math.floor(Math.cos((Math.PI / 6 * i)) * 300);
+            ctx.lineTo(400 - a, 400 - b)
+            ctx.stroke();
+        }
+
+        // const gradient = ctx.createLinearGradient(420, 450, 400, 340);
+        // gradient.addColorStop(0, "red");
+        // gradient.addColorStop(0.6, "rgba(0,0,0,0.0)");
+        // scan.fillStyle = gradient
+        // scan.beginPath();
+        // scan.lineWidth = 1;
+        // scan.moveTo(400, 400)
+        // scan.arc(400, 400, 300, 0,Math.PI / 6, 1)
+        // scan.stroke();
+
+
+        const sdom = document.getElementsByClassName('scan')[0]
+        sdom.addEventListener('click',(e)=>{
+            console.log(e)
+        })
+
+
+
+
+
+    </script>
+</body>
+
+</html>

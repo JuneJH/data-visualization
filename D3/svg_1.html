@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      svg {
+        border: 1px solid red;
+      }
+      .red {
+        transition: all 0.6s cubic-bezier(0.075, 0.82, 0.165, 1);
+      }
+      .red:hover {
+        fill: blueviolet;
+        transform: scale(1.01);
+      }
+      .tick {
+        font-size: 10px;
+        color: red;
+        font-weight: 400;
+        vertical-align: top;
+      }
+      .domain {
+        background-color: yellow;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="./js/d3.js"></script>
+    <script>
+      const w = 500;
+      const h = 500;
+      const pandding = 60;
+      const dataset = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+      const name = [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+      ];
+      const yScale = d3
+        .scaleLinear() //刻度标尺
+        .domain([0, d3.max(dataset)]) //数值范围
+        .range([w - pandding, pandding]); // 显示位置范围
+      const yAxis = d3.axisLeft(yScale);
+      const xScale = d3.scalePoint().domain(name).range([0, w-pandding]).padding(0.2);
+      const xAxis = d3.axisBottom(xScale);
+      const svgdom = d3
+        .select("body")
+        .append("svg")
+        .attr("width", w)
+        .attr("height", h);
+      svgdom
+        .append("g")
+        .attr("transform", `translate(${pandding},0)`)
+        .call(yAxis);
+      svgdom
+        .append("g")
+        .call(xAxis)
+        .attr("transform", `translate(${pandding},${h - pandding})`);
+      const rect = svgdom
+        .selectAll("rect")
+        .data(dataset)
+        .enter()
+        .append("rect")
+        .attr("x", (d, i) => i * 40 + pandding)
+        .attr("width", 30)
+        .attr("y", (d) => {
+          return yScale(d);
+        })
+        .attr("height", (d) => {
+          return h - yScale(d) - pandding;
+        })
+        .attr("fill", "red")
+        .attr("class", "red");
+    </script>
+  </body>
+</html>

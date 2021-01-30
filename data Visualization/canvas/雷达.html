@@ -1,0 +1,1725 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        @-webkit-keyframes flashing {
+
+            0%,
+            30% {
+                -webkit-transform: scale(1);
+                transform: scale(1);
+            }
+
+            70%,
+            100% {
+                -webkit-transform: scale(0);
+                transform: scale(0);
+            }
+        }
+
+        @keyframes flashing {
+
+            0%,
+            30% {
+                -webkit-transform: scale(1);
+                transform: scale(1);
+            }
+
+            70%,
+            100% {
+                -webkit-transform: scale(0);
+                transform: scale(0);
+            }
+        }
+
+        @-webkit-keyframes pulsation {
+            0% {
+                -webkit-transform: scale(0);
+                transform: scale(0);
+                border-color: red;
+                background-color: rgba(255, 0, 0, 0.6);
+            }
+
+            80%,
+            100% {
+                -webkit-transform: scale(1);
+                transform: scale(1);
+                border-color: rgba(255, 0, 0, 0.2);
+                background-color: rgba(255, 0, 0, 0.1);
+            }
+        }
+
+        @keyframes pulsation {
+            0% {
+                -webkit-transform: scale(0);
+                transform: scale(0);
+                border-color: red;
+                background-color: rgba(255, 0, 0, 0.6);
+            }
+
+            80%,
+            100% {
+                -webkit-transform: scale(1);
+                transform: scale(1);
+                border-color: rgba(255, 0, 0, 0.2);
+                background-color: rgba(255, 0, 0, 0.1);
+            }
+        }
+
+        @-webkit-keyframes rotation {
+            from {
+                -webkit-transform: rotate(0deg) translateZ(1px);
+                transform: rotate(0deg) translateZ(1px);
+            }
+
+            to {
+                -webkit-transform: rotate(360deg) translateZ(1px);
+                transform: rotate(360deg) translateZ(1px);
+            }
+        }
+
+        @keyframes rotation {
+            from {
+                -webkit-transform: rotate(0deg) translateZ(1px);
+                transform: rotate(0deg) translateZ(1px);
+            }
+
+            to {
+                -webkit-transform: rotate(360deg) translateZ(1px);
+                transform: rotate(360deg) translateZ(1px);
+            }
+        }
+
+        @-webkit-keyframes scale {
+            from {
+                -webkit-transform: scale(1);
+                transform: scale(1);
+            }
+
+            to {
+                -webkit-transform: scale(1.3);
+                transform: scale(1.3);
+            }
+        }
+
+        @keyframes scale {
+            from {
+                -webkit-transform: scale(1);
+                transform: scale(1);
+            }
+
+            to {
+                -webkit-transform: scale(1.3);
+                transform: scale(1.3);
+            }
+        }
+
+        @-webkit-keyframes polish {
+
+            30%,
+            100% {
+                -webkit-transform: skewX(35deg) translateX(380%);
+                transform: skewX(35deg) translateX(380%);
+            }
+        }
+
+        @keyframes polish {
+
+            30%,
+            100% {
+                -webkit-transform: skewX(35deg) translateX(380%);
+                transform: skewX(35deg) translateX(380%);
+            }
+        }
+/* 动画 */
+        .radar {
+            height: 640px;
+            width: 768px;
+            position: relative;
+            cursor: pointer;
+            -webkit-perspective: 900px;
+            perspective: 900px;
+        }
+
+        .radar .radar-map-container,
+        .radar .risk-points,
+        .radar .scanning-circle canvas {
+            left: 0;
+            top: 0;
+            position: absolute;
+        }
+
+        .radar .radar-map-container,
+        .radar .radar-map,
+        .radar .scanning-circle,
+        .radar .risk-elements-group {
+            -webkit-transition: opacity 2.5s ease-out, -webkit-transform 2.5s ease-out, -webkit-transform-origin;
+            transition: opacity 2.5s ease-out, -webkit-transform 2.5s ease-out, -webkit-transform-origin;
+            transition: transform 2.5s ease-out, opacity 2.5s ease-out, transform-origin;
+            transition: transform 2.5s ease-out, opacity 2.5s ease-out, transform-origin, -webkit-transform 2.5s ease-out, -webkit-transform-origin;
+        }
+
+        .radar .radar-map-container,
+        .radar .radar-map,
+        .radar .scanning-circle {
+            will-change: transform;
+        }
+
+        .radar .radar-map-container {
+            width: 400%;
+            height: 400%;
+            left: -150%;
+            top: -150%;
+            -webkit-transform: scale(0.25);
+            transform: scale(0.25);
+            -webkit-transform-style: preserve-3d;
+            transform-style: preserve-3d;
+        }
+
+        .radar .radar-map {
+            color: rgba(19, 182, 206, 0.4);
+            background: url('http://tttrip.online.sh.cn/gb/images/attachement/jpg/site1/20161213/IMG0025116ac9cd43161785450.jpg') center / contain no-repeat;
+            width: 100%;
+            height: 100%; 
+            -webkit-transform-style: preserve-3d;
+            transform-style: preserve-3d;
+        }
+
+        .radar .radar-map.roaming {
+            -webkit-transition-duration: 5s !important;
+            transition-duration: 5s !important;
+            -webkit-transition-timing-function: ease-in-out;
+            transition-timing-function: ease-in-out;
+            -webkit-transition-delay: .5s;
+            transition-delay: .5s;
+        }
+
+        .radar .radar-map .risk-elements-group {
+            opacity: 0;
+            -webkit-transform-style: preserve-3d;
+            transform-style: preserve-3d;
+        }
+
+        .radar .radar-map .risk-elements-group .red-flag,
+        .radar .radar-map .risk-elements-group .info-panel,
+        .radar .radar-map .risk-elements-group .dashed-circle {
+            position: absolute;
+        }
+
+        .radar .radar-map .risk-elements-group .red-flag,
+        .radar .radar-map .risk-elements-group .dashed-circle {
+            visibility: hidden;
+        }
+
+        .radar .radar-map .risk-elements-group .red-flag,
+        .radar .radar-map .risk-elements-group .info-panel {
+            -webkit-transform-origin: bottom;
+            transform-origin: bottom;
+            -webkit-transform: rotateX(-70deg);
+            transform: rotateX(-70deg);
+        }
+
+        .radar .radar-map .risk-elements-group .red-flag {
+            width: 0.5em;
+            height: 10em;
+            background-color: white;
+            -webkit-transform: rotateX(-70deg) rotateZ(-90deg);
+            transform: rotateX(-70deg) rotateZ(-90deg);
+        }
+
+        .radar .radar-map .risk-elements-group .red-flag.stand-up {
+            -webkit-transform: rotateX(-70deg);
+            transform: rotateX(-70deg);
+            visibility: visible;
+        }
+
+        .radar .radar-map .risk-elements-group .red-flag:before {
+            content: attr(data-city);
+            font-weight: bold;
+            color: white;
+            position: absolute;
+            background-color: red;
+            -webkit-clip-path: polygon(0 0, 100% 50%, 0 100%);
+            -moz-clip-path: polygon(0 0, 100% 50%, 0 100%);
+            clip-path: polygon(0 0, 100% 50%, 0 100%);
+            width: 4.782608695652174em;
+            height: 3.4782608695652173em;
+            line-height: 3.4782608695652173em;
+            font-size: 1.4375em;
+            font-family: 微软雅黑;
+            letter-spacing: 0.43478260869565216em;
+            padding-left: 0.5217391304347826em;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            top: 0.43478260869565216em;
+            white-space: nowrap;
+        }
+
+        .radar .radar-map .risk-elements-group .red-flag:after {
+            content: '';
+            position: absolute;
+            width: 2.1875em;
+            height: 0.625em;
+            border-radius: 50%;
+            background-color: inherit;
+            top: calc(100% - 0.625em);
+            left: calc(50% - 1.09375em);
+        }
+
+        .radar .radar-map .risk-elements-group .info-panel {
+            -webkit-transform: rotateX(-70deg) translateY(-30%);
+            transform: rotateX(-70deg) translateY(-30%);
+            -webkit-filter: opacity(0);
+            -moz-filter: opacity(0);
+            filter: opacity(0);
+            border: 0.0625em solid #DCDA6B;
+            border-radius: 0.25em;
+            background-color: rgba(245, 228, 158, 0.31);
+            display: table;
+            font-weight: bold;
+            font-size: 2.5em;
+            text-shadow: 0.025em 0.025em 0.05em black;
+            padding: 0.2em 0.3em;
+            font-family: 黑体;
+            overflow: hidden;
+        }
+
+        .radar .radar-map .risk-elements-group .info-panel.showup {
+            -webkit-filter: opacity(1);
+            -moz-filter: opacity(1);
+            filter: opacity(1);
+            transition: -webkit-filter 1s linear 0.5s, -moz-filter 1s linear 0.5s, filter 1s linear 0.5s, opacity 0.5s linear;
+        }
+
+        .radar .radar-map .risk-elements-group .info-panel.polish:after {
+            -webkit-animation: polish 5s linear 1 1s;
+            animation: polish 5s linear 1 1s;
+        }
+
+        .radar .radar-map .risk-elements-group .info-panel .info-title {
+            background-image: -webkit-gradient(linear, left top, right top, from(rgba(208, 209, 120, 0.6)), to(rgba(223, 226, 183, 0.05)));
+            background-image: linear-gradient(to right, rgba(208, 209, 120, 0.6), rgba(223, 226, 183, 0.05));
+            color: #FFE401;
+            padding: 0 0.275em;
+            border-radius: inherit;
+        }
+
+        .radar .radar-map .risk-elements-group .info-panel .info-content {
+            color: white;
+            margin: 0.25em;
+            line-height: 1.3em;
+        }
+
+        .radar .radar-map .risk-elements-group .info-panel:after {
+            content: '';
+            position: absolute;
+            width: 30%;
+            height: 100%;
+            -webkit-transform: skewX(35deg) translateX(-160%);
+            transform: skewX(35deg) translateX(-160%);
+            top: 0;
+            background-image: -webkit-gradient(linear, left top, right top, from(transparent), color-stop(rgba(255, 255, 255, 0.3)), to(transparent));
+            background-image: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.3), transparent);
+        }
+
+        .radar .radar-map .risk-elements-group .dashed-circle {
+            width: 7.5em;
+            height: 7.5em;
+            border-radius: 50%;
+            background: center / contain no-repeat;
+            -webkit-animation: rotation 5s linear infinite;
+            animation: rotation 5s linear infinite;
+            -webkit-transition-property: visibility;
+            transition-property: visibility;
+        }
+
+        .radar .radar-map .risk-elements-group .dashed-circle:after {
+            content: '';
+            border-radius: inherit;
+            margin: auto;
+            width: 15%;
+            height: 15%;
+            background-color: #E03636;
+            -webkit-box-shadow: 0 0 0.9375em black;
+            box-shadow: 0 0 0.9375em black;
+            -webkit-animation: scale 1s linear infinite alternate;
+            animation: scale 1s linear infinite alternate;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+        }
+
+        .radar .changing-number-container {
+            position: absolute;
+            right: 12%;
+            top: 10%;
+            bottom: 0;
+            margin: auto;
+        }
+
+        .radar .changing-number-container {
+            display: table;
+            color: #10ABE0;
+        }
+
+        .radar .changing-number-container:before,
+        .radar .changing-number-container:after {
+            display: inline-block;
+        }
+
+        .radar .changing-number-container:before {
+            content: '';
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(45%, transparent), color-stop(55%, currentColor), color-stop(55%, transparent)) center / 100% 1em;
+            background: linear-gradient(to bottom, transparent 45%, currentColor 55%, transparent 55%) center / 100% 1em;
+            width: 1em;
+            height: 100%;
+            margin-right: 0.625em;
+        }
+
+        .radar .changing-number-container:after {
+            font-size: 0.75em;
+            content: attr(data-number);
+            width: 1.3333333333333333em;
+            line-height: 1.3333333333333333em;
+            word-break: break-all;
+            letter-spacing: 1.3333333333333333em;
+            vertical-align: top;
+            font-weight: bold;
+        }
+
+        .radar .risk-points {
+            z-index: 15;
+        }
+
+        .radar .risk-points .risk-point-group .risk-point {
+            position: absolute;
+            width: 0.625em;
+            height: 0.625em;
+            border-radius: 50%;
+         filter   : blur(2px);
+        }
+
+        .radar .risk-points .risk-point-group .risk-point:after {
+            content: '';
+            display: block;
+            height: 100%;
+            border-radius: 50%;
+            will-change: transform;
+            -webkit-transform: scale(0);
+            transform: scale(0);
+        }
+
+        .radar .risk-points .risk-point-group .risk-point.type1:after {
+            -webkit-box-shadow: 0 0 0.3125em 0.3125em white inset, 0 0 0.3125em 0.5625em rgba(245, 76, 128, 0.54), 0 0 2.5625em 1.5625em rgba(222, 17, 17, 0.89);
+            box-shadow: 0 0 0.3125em 0.3125em white inset, 0 0 0.3125em 0.5625em rgba(245, 76, 128, 0.54), 0 0 2.5625em 1.5625em rgba(222, 17, 17, 0.89);
+        }
+
+        .radar .risk-points .risk-point-group .risk-point.type2:after {
+            -webkit-box-shadow: 0 0 0.3125em 0.3125em white inset, 0 0 0.3125em 0.5625em #15d8e8, 0 0 2.5625em 1.5625em rgba(44, 218, 226, 0.89);
+            box-shadow: 0 0 0.3125em 0.3125em white inset, 0 0 0.3125em 0.5625em #15d8e8, 0 0 2.5625em 1.5625em rgba(44, 218, 226, 0.89);
+        }
+
+        .radar .risk-points .risk-point-group .risk-point.critical {
+            -webkit-transform: scale(1);
+            transform: scale(1);
+        }
+
+        .radar .risk-points .risk-point-group .risk-point.ordinary {
+            -webkit-transform: scale(0.4);
+            transform: scale(0.4);
+        }
+
+        .radar .risk-points .risk-point-group .risk-point.pulsation {
+            color: red;
+            -webkit-filter: none;
+            width: 5em;
+            height: 5em;
+        }
+
+        .radar .risk-points .risk-point-group .risk-point.pulsation .pulse-circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            border: 0.1875em solid currentColor;
+            -webkit-animation: pulsation 3s linear 1;
+            animation: pulsation 3s linear 1;
+        }
+
+        .radar .risk-points .risk-point-group .risk-point.pulsation .pulse-circle:nth-child(2) {
+            -webkit-animation-delay: .8s;
+            animation-delay: .8s;
+        }
+
+        .radar .risk-points .risk-point-group .risk-point.pulsation .pulse-circle:nth-child(3) {
+            -webkit-animation-delay: 1.6s;
+            animation-delay: 1.6s;
+        }
+
+        .radar .risk-points .risk-point-group .risk-point.pulsation:after {
+            content: '';
+            position: absolute;
+            width: 15%;
+            height: 15%;
+            border-radius: 50%;
+            background-color: currentColor;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+        }
+
+        .radar .risk-points .risk-point-group.flashing .risk-point:after {
+            -webkit-animation: flashing 2s linear 1;
+            animation: flashing 2s linear 1;
+        }
+
+        .radar .scanning-circle {
+            position: relative;
+            height: 100%;
+        }
+
+        .radar .scanning-circle .radar-scanner {
+            width: 40em;
+            height: 100%;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+            -webkit-transform: rotate(125deg);
+            transform: rotate(125deg);
+        }
+
+        .radar .scanning-circle .radar-scanner .inner-scanner,
+        .radar .scanning-circle .radar-scanner .outer-scanner {
+            width: 100%;
+            height: 100%;
+        }
+
+        .radar .scanning-circle .radar-scanner .inner-scanner {
+            display: none;
+            position: absolute;
+            -webkit-clip-path: inset(0 0 0 50%);
+            -webkit-filter: blur(30px);
+            -webkit-animation: rotation 30s linear infinite;
+            animation: rotation 30s linear infinite;
+        }
+
+        .radar .scanning-circle .radar-scanner .inner-scanner:after {
+            content: '';
+            -webkit-clip-path: inset(0 50% 0 0);
+            display: block;
+            height: 100%;
+            background-color: rgba(19, 182, 206, 0.3);
+            -webkit-transform: rotate(30deg);
+            transform: rotate(30deg);
+            border-radius: 50%;
+        }
+
+        .radar .scanning-circle .radar-scanner .outer-scanner {
+            -webkit-clip-path: circle(20em at 50% 48%);
+            -moz-clip-path: circle(20em at 50% 48%);
+            clip-path: circle(20em at 50% 48%);
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            border: 0 solid white;
+            border-top-width: 5px;
+            border-radius: 50%;
+            -webkit-box-shadow: 0 -0.1875em 0.3125em #33C9E8, 0 0 0.9375em white, 0 0.3125em 0.5em #38C1D2 inset;
+            box-shadow: 0 -0.1875em 0.3125em #33C9E8, 0 0 0.9375em white, 0 0.3125em 0.5em #38C1D2 inset;
+            will-change: transform;
+        }
+
+        .radar .scanning-circle .radar-scanner .outer-scanner .scanner-container {
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            border-radius: 50%;
+            -webkit-transform: rotate(-35deg);
+            transform: rotate(-35deg);
+        }
+
+        .radar .scanning-circle .radar-scanner .outer-scanner .scanner-container .umbrella,
+        .radar .scanning-circle .radar-scanner .outer-scanner .scanner-container .color-sector {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            border-radius: inherit;
+        }
+
+        .radar .scanning-circle .radar-scanner .outer-scanner .scanner-container .umbrella {
+            -webkit-clip-path: inset(0 0 50% 50%);
+            -moz-clip-path: inset(0 0 50% 50%);
+            clip-path: inset(0 0 50% 50%);
+            overflow: hidden;
+            -webkit-filter: blur(30px);
+            -moz-filter: blur(30px);
+            filter: blur(30px);
+        }
+
+        .radar .scanning-circle .radar-scanner .outer-scanner .scanner-container .umbrella .color-sector {
+            -webkit-clip-path: inset(0 50% 0 0);
+            -moz-clip-path: inset(0 50% 0 0);
+            clip-path: inset(0 50% 0 0);
+            background-color: rgba(19, 182, 206, 0.2);
+        }
+
+        .radar .scanning-circle .radar-scanner .outer-scanner .scanner-container .umbrella .color-sector:nth-child(1) {
+            -webkit-transform: rotate(60deg);
+            transform: rotate(60deg);
+        }
+
+        .radar .scanning-circle .radar-scanner .outer-scanner .scanner-container .umbrella .color-sector:nth-child(2) {
+            -webkit-transform: rotate(54deg);
+            transform: rotate(54deg);
+        }
+
+        .radar .scanning-circle .radar-scanner .outer-scanner .scanner-container .umbrella .color-sector:nth-child(3) {
+            -webkit-transform: rotate(48deg);
+            transform: rotate(48deg);
+        }
+
+        .radar .scanning-circle .radar-scanner .outer-scanner .scanner-container .umbrella .color-sector:nth-child(4) {
+            -webkit-transform: rotate(42deg);
+            transform: rotate(42deg);
+        }
+
+        .radar .scanning-circle .radar-scanner .outer-scanner .scanner-container .umbrella .color-sector:nth-child(5) {
+            -webkit-transform: rotate(36deg);
+            transform: rotate(36deg);
+        }
+
+        .radar .scanning-circle .radar-scanner .outer-scanner .scanner-container .umbrella .color-sector:nth-child(6) {
+            -webkit-transform: rotate(30deg);
+            transform: rotate(30deg);
+        }
+
+        .radar .scanning-circle .radar-scanner .outer-scanner .scanner-container .umbrella .color-sector:nth-child(7) {
+            -webkit-transform: rotate(24deg);
+            transform: rotate(24deg);
+        }
+
+        .radar .scanning-circle .radar-scanner .outer-scanner .scanner-container .umbrella .color-sector:nth-child(8) {
+            -webkit-transform: rotate(18deg);
+            transform: rotate(18deg);
+        }
+
+        .radar .scanning-circle .radar-scanner .outer-scanner .scanner-container .umbrella .color-sector:nth-child(9) {
+            -webkit-transform: rotate(12deg);
+            transform: rotate(12deg);
+        }
+
+        .radar .scanning-circle .radar-scanner .outer-scanner .scanner-container .umbrella .color-sector:nth-child(10) {
+            -webkit-transform: rotate(6deg);
+            transform: rotate(6deg);
+        }
+
+        .radar .scanning-circle .radar-scanner .outer-scanner .scanner-container .scanner-decoration {
+            position: relative;
+            height: 100%;
+        }
+
+        .radar .scanning-circle .radar-scanner .outer-scanner .scanner-container .scanner-decoration .thin-border,
+        .radar .scanning-circle .radar-scanner .outer-scanner .scanner-container .scanner-decoration .small-ellipse {
+            -webkit-filter: blur(2px);
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .radar .scanning-circle .radar-scanner .outer-scanner .scanner-container .scanner-decoration .thin-border {
+            width: 0.0625em;
+            height: 50%;
+            background-color: rgba(65, 191, 226, 0.5);
+        }
+
+        .radar .scanning-circle .radar-scanner .outer-scanner .scanner-container .scanner-decoration .small-ellipse {
+            background-color: white;
+            border-radius: 50%;
+            position: absolute;
+            left: 0;
+            right: 0;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+        }
+
+        .radar .scanning-circle .radar-scanner .outer-scanner .scanner-container .scanner-decoration .small-ellipse:nth-child(2) {
+            width: 0.9375em;
+            height: 0.1875em;
+            top: 3%;
+        }
+
+        .radar .scanning-circle .radar-scanner .outer-scanner .scanner-container .scanner-decoration .small-ellipse:nth-child(3) {
+            width: 1.375em;
+            height: 0.25em;
+            top: 17%;
+        }
+
+        .radar .scanning-circle .radar-scanner .outer-scanner .scanner-container .scanner-decoration .small-ellipse:nth-child(4) {
+            width: 1em;
+            height: 0.125em;
+            top: 33%;
+            opacity: 0.3;
+        }
+
+        .radar .scanning-circle .scanning-dashed-circle {
+            -webkit-animation: rotation 2.67s linear infinite;
+            animation: rotation 2.67s linear infinite;
+        }
+
+        .radar .scanning-circle .scanning-dashed-empty-circle {
+            -webkit-animation: rotation 1.67s linear infinite;
+            animation: rotation 1.67s linear infinite;
+        }
+
+        .radar.lying-down .radar-map-container,
+        .radar.lying-down .radar-map,
+        .radar.lying-down .scanning-circle,
+        .radar.lying-down .risk-elements-group {
+            -webkit-transition-duration: 1s;
+            transition-duration: 1s;
+        }
+
+        .radar.lying-down .radar-map-container {
+            -webkit-transform: scale(1);
+            transform: scale(1);
+        }
+
+        .radar.lying-down .radar-map {
+            -webkit-transform: translateZ(-125em) rotateX(70deg);
+            transform: translateZ(-125em) rotateX(70deg);
+            color: transparent;
+        }
+
+        .radar.lying-down .radar-map .risk-elements-group {
+            opacity: 1;
+        }
+
+        .radar.lying-down .radar-map .risk-elements-group .info-panel {
+            opacity: .4;
+        }
+
+        .radar.lying-down .radar-map .risk-elements-group .red-flag {
+            -webkit-transition: opacity 0.5s linear, visibility, -webkit-transform .3s linear;
+            transition: opacity 0.5s linear, visibility, -webkit-transform .3s linear;
+            transition: transform .3s linear, opacity 0.5s linear, visibility;
+            transition: transform .3s linear, opacity 0.5s linear, visibility, -webkit-transform .3s linear;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(19) .red-flag {
+            -webkit-transition-delay: 5.7s, 0s, 5.7s;
+            transition-delay: 5.7s, 0s, 5.7s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(19) .dashed-circle {
+            -webkit-transition-delay: 5.7s;
+            transition-delay: 5.7s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(18) .red-flag {
+            -webkit-transition-delay: 5.3999999999999995s, 0s, 5.3999999999999995s;
+            transition-delay: 5.3999999999999995s, 0s, 5.3999999999999995s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(18) .dashed-circle {
+            -webkit-transition-delay: 5.3999999999999995s;
+            transition-delay: 5.3999999999999995s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(17) .red-flag {
+            -webkit-transition-delay: 5.1s, 0s, 5.1s;
+            transition-delay: 5.1s, 0s, 5.1s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(17) .dashed-circle {
+            -webkit-transition-delay: 5.1s;
+            transition-delay: 5.1s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(16) .red-flag {
+            -webkit-transition-delay: 4.8s, 0s, 4.8s;
+            transition-delay: 4.8s, 0s, 4.8s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(16) .dashed-circle {
+            -webkit-transition-delay: 4.8s;
+            transition-delay: 4.8s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(15) .red-flag {
+            -webkit-transition-delay: 4.5s, 0s, 4.5s;
+            transition-delay: 4.5s, 0s, 4.5s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(15) .dashed-circle {
+            -webkit-transition-delay: 4.5s;
+            transition-delay: 4.5s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(14) .red-flag {
+            -webkit-transition-delay: 4.2s, 0s, 4.2s;
+            transition-delay: 4.2s, 0s, 4.2s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(14) .dashed-circle {
+            -webkit-transition-delay: 4.2s;
+            transition-delay: 4.2s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(13) .red-flag {
+            -webkit-transition-delay: 3.9s, 0s, 3.9s;
+            transition-delay: 3.9s, 0s, 3.9s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(13) .dashed-circle {
+            -webkit-transition-delay: 3.9s;
+            transition-delay: 3.9s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(12) .red-flag {
+            -webkit-transition-delay: 3.5999999999999996s, 0s, 3.5999999999999996s;
+            transition-delay: 3.5999999999999996s, 0s, 3.5999999999999996s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(12) .dashed-circle {
+            -webkit-transition-delay: 3.5999999999999996s;
+            transition-delay: 3.5999999999999996s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(11) .red-flag {
+            -webkit-transition-delay: 3.3s, 0s, 3.3s;
+            transition-delay: 3.3s, 0s, 3.3s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(11) .dashed-circle {
+            -webkit-transition-delay: 3.3s;
+            transition-delay: 3.3s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(10) .red-flag {
+            -webkit-transition-delay: 3s, 0s, 3s;
+            transition-delay: 3s, 0s, 3s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(10) .dashed-circle {
+            -webkit-transition-delay: 3s;
+            transition-delay: 3s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(9) .red-flag {
+            -webkit-transition-delay: 2.6999999999999997s, 0s, 2.6999999999999997s;
+            transition-delay: 2.6999999999999997s, 0s, 2.6999999999999997s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(9) .dashed-circle {
+            -webkit-transition-delay: 2.6999999999999997s;
+            transition-delay: 2.6999999999999997s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(8) .red-flag {
+            -webkit-transition-delay: 2.4s, 0s, 2.4s;
+            transition-delay: 2.4s, 0s, 2.4s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(8) .dashed-circle {
+            -webkit-transition-delay: 2.4s;
+            transition-delay: 2.4s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(7) .red-flag {
+            -webkit-transition-delay: 2.1s, 0s, 2.1s;
+            transition-delay: 2.1s, 0s, 2.1s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(7) .dashed-circle {
+            -webkit-transition-delay: 2.1s;
+            transition-delay: 2.1s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(6) .red-flag {
+            -webkit-transition-delay: 1.7999999999999998s, 0s, 1.7999999999999998s;
+            transition-delay: 1.7999999999999998s, 0s, 1.7999999999999998s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(6) .dashed-circle {
+            -webkit-transition-delay: 1.7999999999999998s;
+            transition-delay: 1.7999999999999998s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(5) .red-flag {
+            -webkit-transition-delay: 1.5s, 0s, 1.5s;
+            transition-delay: 1.5s, 0s, 1.5s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(5) .dashed-circle {
+            -webkit-transition-delay: 1.5s;
+            transition-delay: 1.5s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(4) .red-flag {
+            -webkit-transition-delay: 1.2s, 0s, 1.2s;
+            transition-delay: 1.2s, 0s, 1.2s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(4) .dashed-circle {
+            -webkit-transition-delay: 1.2s;
+            transition-delay: 1.2s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(3) .red-flag {
+            -webkit-transition-delay: 0.8999999999999999s, 0s, 0.8999999999999999s;
+            transition-delay: 0.8999999999999999s, 0s, 0.8999999999999999s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(3) .dashed-circle {
+            -webkit-transition-delay: 0.8999999999999999s;
+            transition-delay: 0.8999999999999999s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(2) .red-flag {
+            -webkit-transition-delay: 0.6s, 0s, 0.6s;
+            transition-delay: 0.6s, 0s, 0.6s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(2) .dashed-circle {
+            -webkit-transition-delay: 0.6s;
+            transition-delay: 0.6s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(1) .red-flag {
+            -webkit-transition-delay: 0.3s, 0s, 0.3s;
+            transition-delay: 0.3s, 0s, 0.3s;
+        }
+
+        .radar.lying-down .radar-map:not(.roaming) .risk-elements-group:nth-child(1) .dashed-circle {
+            -webkit-transition-delay: 0.3s;
+            transition-delay: 0.3s;
+        }
+
+        .radar.pause-animation .inner-scanner,
+        .radar.pause-animation .scanning-dashed-circle,
+        .radar.pause-animation .scanning-dashed-empty-circle {
+            -webkit-animation-play-state: paused;
+            animation-play-state: paused;
+        }
+
+        .radar.pause-animation .changing-number-container {
+            display: none;
+        }
+
+        .radar.pause-animation .risk-points {
+            display: none;
+        }
+
+        .radar.pause-animation .scanning-circle {
+            -webkit-transform: scale(0);
+            transform: scale(0);
+            opacity: 0;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            font-size: 0.8em;
+            margin: 0;
+            background-color: black;
+        }
+
+        .radar {
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            /* margin: auto; */
+        }
+
+        #radar-switch-btn {
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: white;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="radar"></div>
+</body>
+
+<script>
+    function Radar(radarContainer) {
+        radarContainer.innerHTML = '<div class="radar-map-container">\
+                                    <div class="radar-map"></div>\
+                                </div>\
+                                <div class="changing-number-container" data-number="1234567890456"></div>\
+                                <div class="risk-points"></div>\
+                                <div class="scanning-circle">\
+                                    <div class="radar-scanner">\
+                                        <div class="inner-scanner"></div>\
+                                        <div class="outer-scanner">\
+                                            <div class="scanner-container">\
+                                                <div class="umbrella"></div>\
+                                                <div class="scanner-decoration">\
+                                                    <div class="thin-border"></div>\
+                                                    <div class="small-ellipse"></div>\
+                                                    <div class="small-ellipse"></div>\
+                                                    <div class="small-ellipse"></div>\
+                                                </div>\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                </div>';
+
+        this._container = radarContainer;
+        this._containerWidth = this._container.offsetWidth;
+        this._containerHeight = this._container.offsetHeight;
+        this._centerX = this._containerWidth / 2;
+        this._centerY = this._containerHeight / 2;
+
+        // 跟风险点"蒙版"有关的变量
+        this._maskCtx = (function (cw, ch) {
+            var c = document.createElement('canvas');
+            c.width = cw;
+            c.height = ch;
+            return c.getContext('2d');
+        })(this._containerWidth, this._containerHeight);
+        this._maskSectorDegree = 60;  // 雷达扇形所占角度
+        this._maskStartDegree = 0;  // 雷达扇形开始扫描的角度
+        this._scanSpeed = 2;  // 雷达扫描速度，单位为deg
+
+        this._outerScanner = this._container.querySelector('.outer-scanner');  // 外层雷达扫描器
+
+        this._riskPointsContainer = this._container.querySelector('.risk-points');
+
+        this._allRiskPointsArr = [];  // 保存所有风险点的数组，改变雷达扫描速度时要用到这些信息
+        this._tmpRiskPointsArr = [];  // 初始化时保存所有的风险点，雷达扫描过程中会遍历这个数组，并把当前扫描到的风险点从这个数组移动到保存风险点的对象中，雷达扫描玩一遍之后这个数组为空。这样做避免雷达扫描时重复遍历风险点，特别是当有很多风险点的时候
+        this._riskPoints = {};  // 以扫描角度为键值保存风险点信息
+
+        this._riskElements = [];  // 与风险点相关的虚线圆圈、红旗、信息面面和位置信息
+
+        this._curRoamingIndex = 0;  // 当前漫游的风险点索引
+
+        this._radarMap = this._container.querySelector('.radar-map');
+
+        this._roamingDuration = 0;  // 两个风险点之间漫游时长
+
+        this._changingNumberContainer = this._container.querySelector('.changing-number-container');  // 不断变化的数字
+        this._digits_base = Math.pow(10, Math.min(this._changingNumberContainer.dataset.number.length, 16));  // 数字位数，最大为16
+
+        this._mapTranslateZ = (function (container) {  // 相机漫游时拉近的距离
+            var fontSize = parseInt(getComputedStyle(container).fontSize);
+            return 300 / 16 * fontSize;
+        })(this._container);
+
+        this._scaleFactor = this._radarMap.offsetWidth / this._containerWidth;  // 为了使地图拉近之后不失真而放大的倍数
+
+        this._rotateX = 70;  // 地图倒下旋转的角度
+    }
+
+    /* 外部调用的方法 */
+    Radar.prototype.init = function (options) {
+        /*
+            options = {
+                scanSpeed: 2  // 扫描的速度，单位为deg
+            }
+        */
+        options.scanSpeed && (this._scanSpeed = parseInt(options.scanSpeed));
+
+        this._createCanvasElements();
+        this._drawLineAndCircle();
+        this._drawDashedCircle();
+        this._drawDashedEmptyCircle();
+        this._drawScannerSector();
+        this._animate();
+        this._initEvent();
+    };
+
+    // 添加风险点
+    Radar.prototype.addRiskPoints = function (points) {
+        if (!(points instanceof Array)) {
+            points = [points];
+        }
+        points.forEach(this._addOneRiskPoint.bind(this));
+    };
+
+    // 一次设置多个风险点
+    Radar.prototype.setRiskPoints = function (points) {
+        this._removeAllRiskPoints();
+        this.addRiskPoints(points);
+    };
+
+    // 调整雷达扫描速度
+    Radar.prototype.changeScanSpeed = function (perTimeDeg) {
+        perTimeDeg = parseInt(perTimeDeg);
+        if (perTimeDeg == this._scanSpeed || 360 % perTimeDeg != 0) {  // 每次旋转的角度必须是360的约数，否则可能会出现跳过风险点的情况
+            return;
+        }
+        this._riskPoints = {};
+        this._tmpRiskPointsArr = this._allRiskPointsArr;
+        this._scanSpeed = perTimeDeg;
+    };
+
+    // 雷达状态切换
+    Radar.prototype.roamingToggle = function () {
+        this._container.classList.toggle('lying-down');
+        if (this._isLyingDown()) {
+            // 倒下之后停止动画绘制
+            this._pauseAnimation();
+        } else {
+            this._radarMap.classList.remove('roaming');
+            this._radarMap.style.removeProperty('transform');
+        }
+    };
+
+    Radar.prototype.startRoaming = function () {
+        this._container.classList.add('lying-down');
+        this._pauseAnimation();
+    };
+
+    Radar.prototype.stopRoaming = function () {
+        this._container.classList.remove('lying-down');
+        this._radarMap.classList.remove('roaming');
+        this._radarMap.style.removeProperty('transform');
+    };
+
+    /* 私有方法 */
+    Radar.prototype._addOneRiskPoint = function (options) {
+        /**
+            options = {
+                type: 'type1', // 'type1' 或者 'type2'，风险点的颜色是红色还是蓝色
+                severity: 'critical',  // 风险严重程度，'ordinary'表示普通，'critical'表示严重
+                coords: [134.7728099, 53.56097399999999],  // 城市的经纬度
+                city: '北京',
+                title: '大额预授权交易异常',
+                total: 3  // 风险卡的数量
+            }
+        **/
+        // 计算风险点屏幕坐标
+        var pointCoords = this._geoCoordsToScreenCoords(options.coords),
+            point_x = pointCoords[0],
+            point_y = pointCoords[1];
+
+        /*// 计算风险点索引
+        var riskPointIndex = this._calcRiskPointIndex(point_x, point_y);
+        
+        if(!this._riskPoints[riskPointIndex]) {
+            var riskPointGroup = document.createElement('div');  // 相同索引的风险点放在一组
+            riskPointGroup.className = 'risk-point-group';
+            this._riskPointsContainer.appendChild(riskPointGroup);
+            this._riskPoints[riskPointIndex] = riskPointGroup;
+        }*/
+
+        // 创建风险点元素
+        var riskPoint = document.createElement('div');
+        riskPoint.className = 'risk-point ' + options.type + ' ' + options.severity;
+        if (options.type == 'pulsation') {
+            riskPoint.innerHTML = '<div class="pulse-circle"></div>\
+                                <div class="pulse-circle"></div>\
+                                <div class="pulse-circle"></div>';
+        }
+        //this._riskPoints[riskPointIndex].appendChild(riskPoint);
+
+        // 计算并设置风险点位置
+        var point_left = point_x - riskPoint.offsetWidth / 2,
+            point_top = point_y - riskPoint.offsetHeight / 2;
+        riskPoint.style.cssText = 'left: ' + point_left + 'px; top: ' + point_top + 'px;';
+
+        var riskPointItem = {
+            x: point_x,
+            y: point_y,
+            target: riskPoint
+        };
+        this._allRiskPointsArr.push(riskPointItem);
+        this._tmpRiskPointsArr.push(riskPointItem);
+
+        // 创建跟风险点相关的红旗、虚线圆圈和信息面板
+        var elements_group = document.createElement('div');
+        elements_group.className = 'risk-elements-group';
+        elements_group.innerHTML = '<div class="dashed-circle"></div>\
+                                <div class="red-flag" data-city="' + options.city + '"></div>\
+                                <div class="info-panel">\
+                                    <div class="info-title">' + options.title + '</div>\
+                                    <div class="info-content">\
+                                        <div>\
+                                            风险发生地：<span class="risk-city">' + options.city + '</span>\
+                                        </div>\
+                                        <div>\
+                                            风险卡片：<span class="risk-num">' + options.total + '</span>\
+                                        </div>\
+                                    </div>\
+                                </div>';
+        this._radarMap.appendChild(elements_group);
+        var dashed_circle = elements_group.querySelector('.dashed-circle'),
+            red_flag = elements_group.querySelector('.red-flag'),
+            info_panel = elements_group.querySelector('.info-panel');
+        dashed_circle.style.backgroundImage = 'url(' + this._getDashedCircleBg(dashed_circle.offsetWidth) + ')';
+
+        // 计算和设置圆圈、红旗、信息面板的位置
+        var dashed_circle_left = point_x * this._scaleFactor - dashed_circle.offsetWidth / 2,
+            dashed_circle_top = point_y * this._scaleFactor - dashed_circle.offsetHeight / 2,
+            red_flag_left = point_x * this._scaleFactor - red_flag.offsetWidth / 2,
+            red_flag_top = point_y * this._scaleFactor - red_flag.offsetHeight,
+            info_panel_left = point_x * this._scaleFactor - info_panel.offsetWidth / 2,
+            info_panel_top = point_y * this._scaleFactor - info_panel.offsetHeight;
+        dashed_circle.style.left = dashed_circle_left + 'px';
+        dashed_circle.style.top = dashed_circle_top + 'px';
+        if (this._isLyingDown()) {
+            dashed_circle.style.visibility = 'visible';
+        }
+        red_flag.style.left = red_flag_left + 'px';
+        red_flag.style.top = red_flag_top + 'px';
+        info_panel.style.left = info_panel_left + 'px';
+        info_panel.style.top = info_panel_top + 'px';
+
+        // 保存与风险点相关的元素
+        this._riskElements.push({
+            name: options.city,
+            riskPoint: riskPoint,
+            dashedCircle: dashed_circle,
+            redFlag: red_flag,
+            infoPanel: info_panel,
+            translate: [(this._containerWidth * 0.5 - point_x) * this._scaleFactor, this._calcTYByTZ(this._mapTranslateZ, dashed_circle.offsetHeight / 2) - point_y * this._scaleFactor],
+            rotateY: (function (riskElements) {
+                // 旋转的角度正负零交替
+                var base_deg = 10,
+                    max_deviation_deg = 5;
+                var pn = (riskElements.length % 2) * 2 - 1;  // positive or negative
+                var new_base_deg = Math.ceil((riskElements.length + 1) % 3 / 2) * base_deg;  // 10 10 0 10 10 0 ...
+                return pn * (new_base_deg + Math.round(Math.random() * max_deviation_deg));
+            })(this._riskElements),
+            transformOrigin: Math.round(point_x / this._containerWidth * 100) + '%'
+        });
+
+        // 旋转信息面板，使信息面板转到眼前时正对镜头
+        var rotate_deg = this._riskElements[this._riskElements.length - 1].rotateY;
+        info_panel.style.transform = getComputedStyle(info_panel).transform + ' rotateY(' + (-rotate_deg) + 'deg)';
+    };
+
+    // 根据名称删除风险点
+    Radar.prototype._removeRiskPointByName = function (name) {
+        for (var i = 0, len = this._riskElements.length; i < len; i++) {
+            var curRiskElement = this._riskElements[i];
+            if (curRiskElement.name == name) {
+                var riskPointGroup = curRiskElement.riskPoint.parentElement,
+                    riskElementsGroup = curRiskElement.dashedCircle.parentElement;
+                riskPointGroup.removeChild(curRiskElement.riskPoint);
+                this._radarMap.removeChild(riskElementsGroup);
+                this._riskElements.splice(i, 1);
+                return true;
+            }
+        }
+        return false;
+    };
+
+    // 删除所有风险点
+    Radar.prototype._removeAllRiskPoints = function () {
+        var total = this._riskElements.length;
+        this._radarMap.innerHTML = '';
+        this._riskPointsContainer.innerHTML = '';
+        this._riskPoints = {};
+        this._riskElements = [];
+        return total;
+    };
+
+    // 暂停动画
+    Radar.prototype._pauseAnimation = function () {
+        cancelAnimationFrame(this._requestId);
+        this._container.classList.add('pause-animation');
+    };
+
+    // 恢复动画
+    Radar.prototype._resumeAnimation = function () {
+        this._requestId = requestAnimationFrame(this._animate.bind(this));
+        this._container.classList.remove('pause-animation');
+    };
+
+    // 创建canvas标签
+    Radar.prototype._createCanvasElements = function () {
+        var scanningCircleElement = this._container.querySelector('.scanning-circle');
+
+        // 绘制雷达静止的线框和圆圈用到的canvas
+        var canvas = document.createElement('canvas');
+        canvas.width = this._containerWidth;
+        canvas.height = this._containerHeight;
+        scanningCircleElement.appendChild(canvas);
+        this._lineAndCircleCanvas = canvas;
+
+        // 绘制内部旋转的 "虚线" 圆圈用到的canvas
+        this._dashedCircleCanvas = canvas.cloneNode(true);
+        this._dashedCircleCanvas.className = 'scanning-dashed-circle';
+        scanningCircleElement.appendChild(this._dashedCircleCanvas);
+
+        // 绘制内部旋转的 "空心虚线" 圆圈用到的canvas
+        this._dashedEmptyCircleCanvas = canvas.cloneNode(true);
+        this._dashedEmptyCircleCanvas.className = 'scanning-dashed-empty-circle';
+        scanningCircleElement.appendChild(this._dashedEmptyCircleCanvas);
+    };
+
+    // 地理坐标转换成屏幕坐标
+    Radar.prototype._geoCoordsToScreenCoords = function (geoCoords) {  // geoCoords:经纬度数组
+        var china_geometry_bounds = [73.4994136, 53.56097399999999, 61.2733963, 35.40335839999999];  // 西北的经纬度和经纬度跨度
+        var point_x = Math.abs(geoCoords[0] - china_geometry_bounds[0]) / china_geometry_bounds[2] * this._containerWidth,
+            point_y = Math.abs(geoCoords[1] - china_geometry_bounds[1]) / china_geometry_bounds[3] * this._containerHeight;
+        return [point_x, point_y];
+    };
+
+    // 计算风险点的索引(雷达扇形扫描到多少度时要显示这个风险点)
+    Radar.prototype._calcRiskPointIndex = function (point_x, point_y) {
+        var point_offset_x = point_x - this._centerX,  // 与中心点的偏移
+            point_offset_y = this._centerY - point_y,
+            riskPointRadian = -Math.atan(point_offset_y / point_offset_x);  // 风险点在雷达扫描圆形的弧度
+        if (point_offset_x < 0) {
+            riskPointRadian -= Math.PI;
+        } else if (point_offset_y < 0) {
+            riskPointRadian -= Math.PI * 2;
+        }
+        var riskPointDeg = 180 / Math.PI * riskPointRadian;
+        var riskPointIndex = '_deg_' + riskPointDeg.toFixed();
+        return riskPointIndex;
+    };
+
+    // 根据地图倒下之后translateZ的大小计算风险点应该拉近到相机前面的y值，使得风险点向镜头拉近后正好在屏幕正下方
+    Radar.prototype._calcTYByTZ = function (tz, dashed_circle_r) {
+        var p = parseInt(getComputedStyle(this._container).perspective),  // 原始视角
+            pr = (p - tz) / p,  // 应用translateZ后的视角比例
+            point_screen_bottom_offset = dashed_circle_r / pr,  // 风险点漫游时要平移到的位置与屏幕底部的偏移量
+            tr_o_offset_y = pr * (document.body.clientHeight - this._containerHeight / 2 - this._container.getBoundingClientRect().top - point_screen_bottom_offset);  // 最后相机要拉近到的y值与transform origin中心点的偏移量
+        return this._radarMap.offsetHeight / 2 + tr_o_offset_y;
+    };
+
+    /*Radar.prototype._calcTYByTZ = function(tz, dashed_circle_r) {
+        var p = parseInt(getComputedStyle(this._container).perspective),  // 原始视角
+            pr = (p - tz) / p,  // 应用translateZ后的视角比例
+            tmp_tr_o_offset_y = document.body.clientHeight - this._containerHeight / 2 - this._container.getBoundingClientRect().top;  // 最后相机要拉近到的y值与transform origin中心点的偏移量
+        var tr_o_offset_y = this._calcOffsetBeforeRotateX(tmp_tr_o_offset_y, this._rotateX, p-tz);
+        return this._radarMap.offsetHeight / 2 + tr_o_offset_y * pr;
+    };*/
+
+    // 根据绕x轴旋转之后风险点的位置计算旋转之前风险点要平移到的位置
+    Radar.prototype._calcOffsetBeforeRotateX = function (newOffset, rotateX, oldPerspective) {  // 计算不正确
+        // (newOffset / cos(rotateX)) / x = oldPerspective / (oldPerspective - x * sin(rotateX))
+        var x1 = newOffset / Math.cos(Math.PI / 180 * rotateX);
+        return oldPerspective * x1 / (oldPerspective + x1 * Math.sin(Math.PI / 180 * rotateX));
+    };
+
+    // 动画
+    Radar.prototype._animate = function () {
+        this._rotateRiskPointMask();
+        this._changeNumber();
+        this._requestId = requestAnimationFrame(arguments.callee.bind(this));
+    };
+
+    // 变化数字
+    Radar.prototype._changeNumber = function () {
+        var _assist_number = arguments.callee._assist_number || 0;
+        if (_assist_number % 6 == 0) {
+            var number = Math.round(Math.random() * this._digits_base);
+            this._changingNumberContainer.dataset.number = number;
+        }
+        arguments.callee._assist_number = (++_assist_number) % 360;
+    };
+
+    // 绘制雷达静止的线框和圆圈
+    Radar.prototype._drawLineAndCircle = function () {
+        var radius = this._containerHeight / 2,
+            ctx = this._lineAndCircleCanvas.getContext('2d');
+        // 最外层圆圈
+        var lineWidth = 5;
+        ctx.lineWidth = lineWidth;
+        ctx.strokeStyle = '#0146C2';
+        ctx.beginPath();
+        ctx.arc(this._centerX, this._centerY, radius - lineWidth / 2, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.stroke();
+        // 内部圆圈
+        ctx.fillStyle = 'rgba(30,199,230,.5)';
+        ctx.beginPath();
+        ctx.arc(this._centerX, this._centerY, 3, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.fill();
+        var totalCircle = 8;
+        ctx.lineWidth = 0.5;
+        ctx.strokeStyle = 'rgba(30,199,230,.5)';
+        for (var i = 0; i < totalCircle - 1; i++) {
+            ctx.beginPath();
+            ctx.arc(this._centerX, this._centerY, radius / totalCircle * (i + 1), 0, Math.PI * 2);
+            ctx.closePath();
+            ctx.stroke();
+        }
+        // 内部直线
+        var totalLines = 14;
+        ctx.save();
+        ctx.lineWidth = 0.3;
+        ctx.translate(this._centerX, this._centerY);
+        ctx.rotate(Math.PI / totalLines);
+        for (var i = 0; i < totalLines; i++) {
+            ctx.rotate(Math.PI * 2 / totalLines);
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(0, -radius + lineWidth);
+            ctx.closePath();
+            ctx.stroke();
+        }
+        ctx.restore();
+        // 内部虚线
+        ctx.save();
+        ctx.setLineDash([2, 8]);
+        ctx.translate(this._centerX, this._centerY);
+        for (var i = 0; i < totalLines / 2; i++) {
+            ctx.rotate(Math.PI * 4 / totalLines);
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(0, -radius + lineWidth);
+            ctx.closePath();
+            ctx.stroke();
+        }
+        ctx.restore();
+    };
+
+    // 绘制内部旋转的 "虚线" 圆圈
+    Radar.prototype._drawDashedCircle = function () {
+        var ctx = this._dashedCircleCanvas.getContext('2d');
+
+        ctx.clearRect(-this._centerX, -this._centerY, this._dashedCircleCanvas.width, this._dashedCircleCanvas.height);
+        ctx.globalAlpha = 0.8;
+        ctx.lineWidth = 5;
+        ctx.translate(this._centerX, this._centerY);
+
+        var radius = this._containerHeight / 2 / 8 * 7 - ctx.lineWidth / 2;
+
+        ctx.strokeStyle = '#016FB7';
+        ctx.beginPath();
+        ctx.arc(0, 0, radius, 0, Math.PI / 5);
+        ctx.stroke();
+
+        ctx.strokeStyle = '#23B2D8';
+        ctx.rotate(Math.PI / 3);
+        ctx.beginPath();
+        ctx.arc(0, 0, radius, 0, Math.PI / 6);
+        ctx.stroke();
+
+        ctx.strokeStyle = '#80DEF9';
+        ctx.rotate(Math.PI / 3);
+        ctx.beginPath();
+        ctx.arc(0, 0, radius, 0, Math.PI / 18);
+        ctx.stroke();
+
+        ctx.strokeStyle = '#085BAF';
+        ctx.rotate(Math.PI / 4);
+        ctx.beginPath();
+        ctx.arc(0, 0, radius, 0, Math.PI / 9);
+        ctx.stroke();
+    };
+
+    // 绘制内部旋转的空心虚线圆圈
+    Radar.prototype._drawDashedEmptyCircle = function () {
+        var ctx = this._dashedEmptyCircleCanvas.getContext('2d');
+
+        ctx.clearRect(-this._centerX, -this._centerY, this._dashedEmptyCircleCanvas.width, this._dashedEmptyCircleCanvas.height);
+        ctx.strokeStyle = '#5298D3';
+        ctx.globalAlpha = 0.3;
+        ctx.translate(this._centerX, this._centerY);
+
+        var radius = this._containerHeight / 2 / 8 * 6,
+            radiusDeviation = 5,  // 空心虚线的高度
+            innerRadius = radius - radiusDeviation;
+
+        ctx.beginPath();
+        ctx.arc(0, 0, radius, 0, Math.PI / 5);
+        ctx.arc(0, 0, innerRadius, Math.PI / 5, 0, true);
+        ctx.closePath();
+        ctx.stroke();
+
+        ctx.rotate(Math.PI / 3);
+        ctx.beginPath();
+        ctx.arc(0, 0, radius, 0, Math.PI / 6);
+        ctx.arc(0, 0, innerRadius, Math.PI / 6, 0, true);
+        ctx.closePath();
+        ctx.stroke();
+
+        ctx.rotate(Math.PI / 3);
+        ctx.beginPath();
+        ctx.arc(0, 0, radius, 0, Math.PI / 18);
+        ctx.arc(0, 0, innerRadius, Math.PI / 18, 0, true);
+        ctx.closePath();
+        ctx.stroke();
+
+        ctx.rotate(Math.PI / 4);
+        ctx.beginPath();
+        ctx.arc(0, 0, radius, 0, Math.PI / 9);
+        ctx.arc(0, 0, innerRadius, Math.PI / 9, 0, true);
+        ctx.closePath();
+        ctx.stroke();
+    };
+
+    // 绘制雷达扫描锥形渐变扇形
+    Radar.prototype._drawScannerSector = function () {
+        // 创建canvas元素
+        var c = document.createElement('canvas');
+        c.width = c.height = this._containerHeight;
+        this._outerScanner.querySelector('.umbrella').appendChild(c);
+        // 绘制锥形渐变
+        var ctx = c.getContext('2d');
+        var sectorCnt = 10;  // 用10块扇形模拟锥形渐变
+        var startDeg = -90, endDeg;
+        var sectorRadius = this._containerHeight / 2;
+        ctx.translate(sectorRadius, sectorRadius);
+        ctx.fillStyle = 'rgba(19, 182, 206, 0.2)';
+        for (var i = 0; i < sectorCnt; i++) {
+            endDeg = startDeg + this._maskSectorDegree - this._maskSectorDegree / sectorCnt * i;
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(0, sectorRadius);
+            ctx.arc(0, 0, sectorRadius, Math.PI / 180 * (startDeg - 180), Math.PI / 180 * endDeg);
+            ctx.closePath();
+            ctx.fill();
+        }
+    };
+
+    // 旋转只显示风险点的区域
+    Radar.prototype._rotateRiskPointMask = function () {
+        function angleToRadian(angle) {
+            return Math.PI / 180 * angle;
+        }
+        this._maskStartDegree = this._maskStartDegree % 360;
+
+        this._maskCtx.beginPath();
+        this._maskCtx.moveTo(this._centerX, this._centerY);
+        this._maskCtx.arc(this._centerX, this._centerY, this._containerHeight / 2, angleToRadian(this._maskStartDegree), angleToRadian(this._maskStartDegree + this._maskSectorDegree));
+        this._maskCtx.lineTo(this._centerX, this._centerY);
+        this._maskCtx.closePath();
+
+        // 控制风险点的显示
+        var riskPointIndex = '_deg_' + this._maskStartDegree;
+        if (!this._riskPoints[riskPointIndex] && this._tmpRiskPointsArr.length > 0) {
+            // todo: 这里先判断this._riskPoints[riskPointIndex]可能会出现不去处理this._tmpRiskPointsArr的情况，特别是当风险点在某一块区域很密集的时候,而且后面添加的风险点都会另开一组
+            var that = this;
+            this._tmpRiskPointsArr.forEach(function (point) {
+                if (that._maskCtx.isPointInPath(point.x, point.y)) {
+                    // 把当前扫描到的风险点缓存起来
+                    if (!that._riskPoints[riskPointIndex]) {
+                        var riskPointGroup = document.createElement('div');  // 相同索引的风险点放在一组
+                        riskPointGroup.className = 'risk-point-group';
+                        that._riskPointsContainer.appendChild(riskPointGroup);
+                        that._riskPoints[riskPointIndex] = riskPointGroup;
+                    }
+                    that._riskPoints[riskPointIndex].appendChild(point.target);
+                    point._willDelete = true;  // 将要删除的标记
+                }
+            });
+
+            // 遍历完之后删除已处理过的风险点
+            this._tmpRiskPointsArr = this._tmpRiskPointsArr.filter(function (pointItem) {
+                var flag = !pointItem._willDelete;
+                delete pointItem._willDelete;
+                return flag;
+            });
+        }
+        this._riskPoints[riskPointIndex] && this._riskPoints[riskPointIndex].classList.add('flashing');
+
+        // 旋转雷达扫描扇形
+        this._outerScanner.style.transform = 'rotate(' + this._maskStartDegree + 'deg) translateZ(0)';
+        this._maskStartDegree -= this._scanSpeed;
+    };
+
+    // 绘制风险点旋转的虚线圆圈背景
+    Radar.prototype._getDashedCircleBg = function (radius) {
+        var center_x = radius / 2,
+            center_y = radius / 2;
+        var c = document.createElement('canvas');
+        c.width = radius;
+        c.height = radius;
+        var ctx = c.getContext('2d');
+        ctx.strokeStyle = '#EAFF00';
+        ctx.shadowColor = '#EAFF00';
+        ctx.shadowBlur = radius / 25;
+        // 绘制内圆环
+        ctx.lineWidth = radius / 50;
+        ctx.beginPath();
+        ctx.arc(center_x, center_y, radius / 4, 0, Math.PI * 2);
+        ctx.stroke();
+        // 绘制外层虚线圆环
+        var dash_cnt = 5,  // 实心虚线点个数
+            dash_ratio = 0.8;  // 空心虚线点与实心虚线点的比例
+        ctx.lineWidth = radius / 10;
+        var solid_dash_len = Math.PI * (radius - ctx.lineWidth) / dash_cnt / (1 + dash_ratio),
+            hollow_dash_len = solid_dash_len * dash_ratio;
+        ctx.setLineDash([solid_dash_len, hollow_dash_len]);
+        ctx.beginPath();
+        ctx.arc(center_x, center_y, radius / 2 - ctx.lineWidth / 2, 0, Math.PI * 2);
+        ctx.stroke();
+        return c.toDataURL();
+    };
+
+    // 地图倒下之后开始显示风险点处的虚线圆圈、红旗和信息面板
+    Radar.prototype._showRiskElements = function () {
+        this._riskElements.forEach(function (re, ri) {
+            re.dashedCircle.style.visibility = 'visible';
+            re.redFlag.classList.add('stand-up');
+        });
+    };
+
+    // 相机漫游到当前风险点时让红旗消失、让信息面板出现
+    Radar.prototype._handleCurRiskElements = function () {
+        var curRiskElements = this._riskElements[this._curRoamingIndex];
+        if (curRiskElements) {
+            curRiskElements.redFlag.style.opacity = 0;
+            curRiskElements.dashedCircle.style.visibility = 'visible';
+            curRiskElements.infoPanel.classList.add('showup');
+            curRiskElements.infoPanel.classList.add('polish');
+
+            // 设置上一个漫游的风险点的信息面板的透明度
+            var lastRiskElements = this._riskElements[(this._curRoamingIndex - 1 + this._riskElements.length) % this._riskElements.length];
+            if (lastRiskElements) {
+                lastRiskElements.infoPanel.style.removeProperty('opacity');
+            }
+        }
+    };
+
+    // 地图回到初始状态时隐藏跟风险点相关的元素
+    Radar.prototype._hideRiskElements = function () {
+        this._curRoamingIndex = 0;
+        this._riskElements.forEach(function (re, ri) {
+            re.redFlag.classList.remove('stand-up');
+            re.redFlag.style.opacity = 1;
+
+            re.dashedCircle.style.visibility = 'hidden';
+
+            re.infoPanel.style.removeProperty('opacity');
+            re.infoPanel.classList.remove('showup');
+            re.infoPanel.classList.remove('polish');
+        });
+    };
+
+    // 风险点镜头漫游
+    Radar.prototype._riskPointsRoaming = function () {
+        if (!this._isInRoamingState()) return;
+        var curRiskElements = this._riskElements[this._curRoamingIndex];
+        if (!curRiskElements) return;
+        var radarMapStyle = 'translateZ(' + this._mapTranslateZ + 'px) rotateY(' + curRiskElements.rotateY + 'deg) rotateX(' + this._rotateX + 'deg) translate3d(' + curRiskElements.translate[0] + 'px, ' + curRiskElements.translate[1] + 'px, 0)';
+
+        //test
+        //radarMapStyle = 'translateZ(' + this._mapTranslateZ + 'px) translate3d(' + curRiskElements.translate[0] + 'px, ' + curRiskElements.translate[1] + 'px, 0)';
+        //test
+
+        // 以上一个风险点为中心绕Y轴旋转(暂时以中心旋转)
+        /*var lastRiskElements = this._riskElements[(this._curRoamingIndex - 1 + this._riskElements.length) % this._riskElements.length];
+        this._radarMap.style.transformOrigin = lastRiskElements.transformOrigin;*/
+
+        this._radarMap.style.transform = radarMapStyle;
+        curRiskElements.infoPanel.classList.remove('polish');
+
+        // 当前的信息面板设置透明度
+        var roamingDuration = this._roamingDuration || parseFloat(getComputedStyle(this._radarMap).transitionDuration.split(', ')[0]);
+        setTimeout(function (that) {
+            if (that._isLyingDown()) {
+                curRiskElements.infoPanel.style.opacity = 1;
+            }
+        }, roamingDuration * 0.5 * 1000, this);
+    };
+
+    // 雷达是否是倒下的状态
+    Radar.prototype._isLyingDown = function () {
+        return this._container.classList.contains('lying-down');
+    };
+
+    // 雷达是否是漫游状态
+    Radar.prototype._isInRoamingState = function () {
+        return this._radarMap.classList.contains('roaming');
+    };
+
+    // 添加点击事件
+    Radar.prototype._initEvent = function () {
+        var that = this;
+        this._container.addEventListener('click', function (e) {
+            that.roamingToggle();
+        }, false);
+
+        this._riskPointsContainer.addEventListener('animationend', function (e) {
+            e.target.parentElement.classList.remove('flashing');
+        }, false);
+
+        this._radarMap.addEventListener('transitionend', function (e) {
+            if (e.propertyName != 'transform') return;
+            if (e.target === e.currentTarget) {
+                if (that._isLyingDown()) {
+                    // 地图在倒下的状态
+                    if (that._isInRoamingState()) {
+                        // 相机漫游状态
+                        that._handleCurRiskElements();  // 当前风险点漫游结束
+                        that._curRoamingIndex = (that._curRoamingIndex + 1) % that._riskElements.length;
+                        that._riskPointsRoaming();  // 下一个风险点漫游开始
+                    } else {
+                        // 刚刚倒下状态
+                        that._showRiskElements();
+                    }
+                } else {
+                    that._hideRiskElements();
+                    that._resumeAnimation();
+                }
+            } else if (e.target.classList.contains('red-flag') && !e.target.parentElement.nextElementSibling) {
+                // 最后一根红旗树立起来之后开始漫游
+                that._radarMap.classList.add('roaming');  // 修改transition duration和transition timing-function
+                setTimeout(function () {
+                    that._riskPointsRoaming();
+                }, 1000);
+            }
+        }, false);
+    };
+
+
+    var radar = new Radar(document.querySelector('.radar'));
+    radar.init({ scanSpeed: 2 });  // 扫描的速度，单位为deg，必须为360的约数
+    radar.addRiskPoints([
+        {
+            type: 'type1',
+            severity: 'critical',
+            coords: [116.407395, 39.904211], // 北京
+            city: '北京',
+            title: '大额预授权交易异常',
+            total: 3
+        }, {
+            type: 'type1',
+            severity: 'ordinary',
+            coords: [104.066801, 30.572816], // 成都
+            city: '成都',
+            title: '大额预授权交易异常',
+            total: 3
+        }, {
+            type: 'type1',
+            severity: 'ordinary',
+            coords: [121.473701, 31.230416], // 上海
+            city: '上海',
+            title: '大额预授权交易异常',
+            total: 3
+        }, {
+            type: 'type2',
+            severity: 'ordinary',
+            coords: [113.264385, 23.12911], // 广州
+            city: '广州',
+            title: '大额预授权交易异常',
+            total: 3
+        }
+    ]);
+
+
+    document.querySelector('#radar-switch-btn').addEventListener('click', e => {
+        radar.roamingToggle();
+    });
+</script>
+
+</html>

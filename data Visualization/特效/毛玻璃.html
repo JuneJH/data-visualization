@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .box{
+            width: 600px;
+            height:400px;
+            background:url('../zl.jpg');
+            position: relative;
+            overflow: hidden;
+        }
+        .content{
+            width: 600px;
+            height:400px;
+            position: absolute;
+            left:0px;
+            top:0px;
+            /* animation: move 3s linear infinite; */
+            font-size: 30px;
+            text-align: center;
+            color:#fff;
+            z-index: 10;
+        }
+        .content::after{
+            content: '';
+            background:url('../zl.jpg');
+            background-color: rgba(1, 1, 2, .2);
+            position:absolute;
+            width: 100%;
+            height: 100%;
+            left:0;
+            top:0px;
+            background-attachment: fixed;
+            -webkit-filter: blur(5px);
+
+        }
+        @keyframes move {
+            0%{
+                top:0px;
+            }
+            50%{
+                top:400px;
+            }
+            100%{
+                top:0px;
+            }
+            
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <div class="content">
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tempore culpa officia blanditiis. Modi, qui? Harum nemo ut facilis aliquam consequatur aperiam reiciendis possimus expedita ad, beatae rem. Pariatur, debitis ea!
+        </div>
+    </div>
+</body>
+</html>
