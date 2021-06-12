@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>顶点概念</title>
+  </head>
+  <body>
+    <script src="./three.js"></script>
+    <script>
+      const scene = new THREE.Scene();
+      const axishelper = new THREE.AxisHelper(650);
+      scene.add(axishelper);
+      var geometry = new THREE.BufferGeometry(); //创建一个Buffer类型几何体对象
+      //类型数组创建顶点数据
+      var vertices = new Float32Array([
+        0,0,0, //顶点1坐标
+        100,0,0, //顶点2坐标
+        0, 200, 0, //顶点3坐标
+        0,0,100, //顶点4坐标
+        0,0,200, //顶点5坐标
+        100,0,100, //顶点6坐标
+        200,0,0, //顶点6坐标
+        400,0,0, //顶点6坐标
+        200,100,0, //顶点6坐标
+        400,100,0, //顶点6坐标
+      ]);
+      // 创建属性缓冲区对象
+      var attribue = new THREE.BufferAttribute(vertices, 3); //3个为一组，表示一个顶点的xyz坐标
+      // 设置几何体attributes属性的位置属性
+      geometry.attributes.position = attribue;
+      // 三角面(网格)渲染模式
+      var material = new THREE.LineBasicMaterial({
+        color: 0xff0000, //三角面颜色
+        // side: THREE.DoubleSide, //两面可见
+        size:10
+      }); //材质对象
+      var mesh = new THREE.Line(geometry, material); //网格模型对象Mesh
+      scene.add(mesh);
+      
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const k = width / height;
+      const s = 500;
+      const camera = new THREE.OrthographicCamera(-s * k,s * k,s,-s,1,1000)
+      camera.position.set(500,500,500);
+      camera.lookAt(scene.position);
+
+      const renderer = new THREE.WebGLRenderer();
+      renderer.setSize(width,height);
+      renderer.setClearColor("#008c8c",.9);
+      document.body.appendChild(renderer.domElement);
+      renderer.render(scene,camera)
+    </script>
+  </body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>练习</title>
+  </head>
+  <body>
+    <script src="./three.js"></script>
+    <script src="../node_modules/three/examples/js/controls/OrbitControls.js"></script>
+    <script>
+      const scene = new THREE.Scene();
+
+      // 加入坐标系
+      const axishelper = new THREE.AxisHelper(650);
+      scene.add(axishelper);
+      const geometry = new THREE.SphereGeometry(100, 50, 50);
+      const geometry1 = new THREE.BoxGeometry(100, 100, 100);
+      const geometry2 = new THREE.CylinderGeometry(50, 50, 100, 25);
+      const material = new THREE.MeshPhongMaterial({
+        color:"red",    // 材质颜色
+        // opacity:0.7, // 透明
+        // transparent:true,    // 开启透明
+        // wireframe: true,      // 开启线框
+        specular:"yellow",     // 高光
+        shininess: 3,          // 光泽
+      });
+      const mesh = new THREE.Mesh(geometry, material);
+      const mesh1 = new THREE.Mesh(geometry1, material);
+      const mesh2 = new THREE.Mesh(geometry2, material);
+      // mesh1.translateY(300);
+      // mesh2.translateX(300);
+
+      mesh1.position.set(0, 0, 300);
+      mesh2.position.set(200, 0, 0);
+      scene.add(mesh);
+      scene.add(mesh2);
+
+      scene.add(mesh1);
+
+      const point = new THREE.PointLight(0xffffff); // 点光源
+      point.position.set(-200, -200, -600);
+      scene.add(point);
+      const point1 = new THREE.PointLight(0xffffff); // 点光源
+      point1.position.set(200, 200, 600);
+      scene.add(point1);
+
+      const ambient = new THREE.SpotLight('#fff');//环境光
+      scene.add(ambient);
+
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const k = width / height;
+      const s = 500;
+
+      const camera = new THREE.OrthographicCamera(
+        -s * k,
+        s * k,
+        s,
+        -s,
+        1,
+        1000
+      );
+      camera.position.set(500, 500, 500);
+      camera.lookAt(scene.position);
+
+      const renderer = new THREE.WebGLRenderer();
+      renderer.setSize(width, height);
+      renderer.setClearColor("#008c8c", 0.9);
+      document.body.appendChild(renderer.domElement);
+      renderer.render(scene, camera);
+
+      // 加入动画
+      const control = new THREE.OrbitControls(camera, renderer.domElement);
+      control.addEventListener("change", () => {
+        renderer.render(scene, camera);
+      });
+    </script>
+  </body>
+</html>

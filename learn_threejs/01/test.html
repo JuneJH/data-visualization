@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>练习</title>
+</head>
+<body>
+    
+
+    <script src="./three.js"></script>
+    <script src="../node_modules/three/examples/js/controls/OrbitControls.js"></script>
+    <script>
+        const scene = new THREE.Scene();
+
+        const geometry = new THREE.BoxGeometry(100,100,100);
+        const material = new THREE.MeshPhongMaterial({
+            color:"#f40"
+        })
+        const mesh = new THREE.Mesh(geometry,material);
+        scene.add(mesh);
+
+        // 环境光
+        const ambient = new THREE.AmbientLight(0xaaaaa);
+        scene.add(ambient);
+        // 点光源
+        const point = new THREE.PointLight("#f40");
+        point.position.set(200,200,300);
+        scene.add(point);
+        // 平行光
+        // const
+
+
+
+
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        const k = width / height;
+        const s = 500;
+
+        const camera = new THREE.OrthographicCamera(-s * k,s * k,s,-s,1,1000);
+        camera.position.set(100,100,100);
+        camera.lookAt(scene.position);
+
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(width,height);
+        renderer.setClearColor("#008c8c",.9);
+        document.body.appendChild(renderer.domElement);
+        renderer.render(scene,camera);
+
+        // 一般动画效果
+        // setInterval(()=>{
+        //     renderer.render(scene,camera);
+        //     mesh.rotateZ(.01)
+
+        // },200)
+        
+        // requestAnimationFrame
+        let lock = false;
+        function render(){
+            if(lock)return;
+            renderer.render(scene,camera);
+            mesh.rotateY(.01);
+            requestAnimationFrame(render);
+        }
+        render();
+
+        // 优化requestAnimationFrame
+        let t1 = new Date();
+        function render1(){
+            let t2 = new Date();
+            let t = t2 - t1;
+            t1 = t2;
+            requestAnimationFrame(render1)
+            renderer.render(scene,camera);
+            mesh.rotateY(.001*t);
+        }
+        // render1()
+
+        // 鼠标控制
+        
+        const controls = new THREE.OrbitControls(camera,renderer.domElement);
+        let timer = null;
+        controls.addEventListener("change",()=>{clearTimeout(timer); lock = true;renderer.render(scene,camera);
+            timer = setTimeout(()=>{lock=false;render()},3000)});
+    </script>
+</body>
+</html>
