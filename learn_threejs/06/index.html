@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<script src="../three.js"></script>
+
+<script>
+    const scene = new THREE.Scene();
+
+    const box1 = new THREE.BoxGeometry(100,100,100);
+    const box2 = new THREE.BoxGeometry(100,200,300);
+    const material = new THREE.MeshLambertMaterial({
+        color:"#f40"
+    })
+    const group = new THREE.Group();
+    const mesh1 = new THREE.Mesh(box1,material);
+    const mesh2 = new THREE.Mesh(box2,material);
+    mesh2.position.x = 300;
+    group.add(mesh1,mesh2);
+    scene.add(group);
+
+    const a = new THREE.AmbientLight("#fff")
+    scene.add(a)
+
+
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const k = width / height;
+    const s = 500;
+    const camera = new THREE.OrthographicCamera(-s * k, s * k, -s, s, 1,1500);
+    camera.position.set(500,500,500);
+    camera.lookAt(scene.position);
+
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(width,height);
+    renderer.setClearColor("#008c8c",1);
+    document.body.appendChild(renderer.domElement);
+
+    renderer.render(scene,camera);
+
+    console.log("组对象",group);
+    let angle = Math.PI / 100;
+    function animation(){
+        group.rotateY(angle);
+        requestAnimationFrame(animation);
+        renderer.render(scene,camera);
+    }
+    animation();
+
+
+
+</script>
+
+</body>
+</html>

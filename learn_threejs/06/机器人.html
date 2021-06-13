@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<script src="../three.js"></script>
+<script src="../node_modules/three/examples/js/controls/OrbitControls.js"></script>
+
+
+<script>
+    const scene = new THREE.Scene();
+
+    const axis = new THREE.AxisHelper(650);
+    scene.add(axis);
+
+    const headerMesh = sphereMesh(50,0,0,0,"#f40");
+    const leftEyeMesh = sphereMesh(10,70,100,100,"#000");
+    const rightEyeMesh = sphereMesh(10,100,100,70,"#000");
+    const mouthMesh = sphereMesh(10,60,35,60,"#000");
+    const headerGroup = new THREE.Group();
+    headerGroup.name = "头";
+    headerGroup.add(leftEyeMesh,headerMesh,rightEyeMesh,mouthMesh);
+    headerGroup.position.y = 130;
+
+    const neckMesh = cylinderMesh(10,30,0,70,0,"#f40");
+    const bodyMesh = cylinderMesh(20,100,0,0,0,"#f40");
+    const leftLegMesh = cylinderMesh(10,70,20,60,50,"#f40");
+    const rightLegMesh = cylinderMesh(10,70,50,60,20,"#f40");
+
+    const bodyGroup = new THREE.Group();
+    bodyGroup.name = "body"
+    bodyGroup.add(neckMesh,bodyMesh,leftLegMesh,rightLegMesh);
+    scene.add(headerGroup,bodyGroup)
+
+
+    // headGroup.add(headMesh, leftEyeMesh, rightEyeMesh);
+    // // 身体网格模型和组
+    // const neckMesh = cylinderMesh(3, 10, 0, -15, 0);
+    // neckMesh.name = "脖子"
+    // const bodyMesh = cylinderMesh(14, 30, 0, -35, 0);
+    // bodyMesh.name = "腹部"
+    // const leftLegMesh = cylinderMesh(4, 60, 0, -80, -7);
+    // leftLegMesh.name = "左腿"
+    // const rightLegMesh = cylinderMesh(4, 60, 0, -80, 7);
+    // rightLegMesh.name = "右腿"
+    // const legGroup = new THREE.Group();
+    // legGroup.name = "腿"
+    // legGroup.add(leftLegMesh, rightLegMesh);
+    // const bodyGroup = new THREE.Group();
+    // bodyGroup.name = "身体"
+    // bodyGroup.add(neckMesh, bodyMesh, legGroup);
+    // // 人Group
+    // const personGroup = new THREE.Group();
+    // personGroup.name = "人"
+    // personGroup.add(headGroup, bodyGroup)
+    // personGroup.translateY(50)
+    //
+    //
+    // console.log(personGroup)
+    //
+    // scene.add(personGroup);
+
+    // 球体网格模型创建函数
+    function sphereMesh(R, x, y, z,color) {
+        const geometry = new THREE.SphereGeometry(R, 25, 25); //球体几何体
+        const material = new THREE.MeshPhongMaterial({
+            color,
+        }); //材质对象Material
+        const mesh = new THREE.Mesh(geometry, material); // 创建网格模型对象
+        mesh.position.set(x, y, z);
+        return mesh;
+    }
+    // 圆柱体网格模型创建函数
+    function cylinderMesh(R, h, x, y, z,color) {
+        const geometry = new THREE.CylinderGeometry(R, R, h, 25, 25); //球体几何体
+        const material = new THREE.MeshPhongMaterial({
+            color,
+        }); //材质对象Material
+        const mesh = new THREE.Mesh(geometry, material); // 创建网格模型对象
+        mesh.position.set(x, y, z);
+        return mesh;
+    }
+
+    const a = new THREE.AmbientLight("#fff")
+    scene.add(a)
+
+
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const k = width / height;
+    const s = 500;
+    const camera = new THREE.OrthographicCamera(-s * k, s * k, s, -s, 1,1500);
+    camera.position.set(300,300,300);
+    camera.lookAt(scene.position);
+
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(width,height);
+    renderer.setClearColor("#008c8c",1);
+    document.body.appendChild(renderer.domElement);
+
+
+    renderer.render(scene,camera);
+
+    let angle = Math.PI / 100;
+    function animation(){
+        personGroup.rotateZ(angle);
+        requestAnimationFrame(animation);
+        renderer.render(scene,camera);
+    }
+    // animation();
+
+    const control = new THREE.OrbitControls(camera, renderer.domElement);
+    control.addEventListener("change", () => {
+        renderer.render(scene, camera);
+    });
+
+    scene.traverse(obj=>{
+        console.log(obj)
+    })
+
+
+</script>
+
+</body>
+</html>
